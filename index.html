@@ -129,7 +129,21 @@
   <div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="run" id="exportRec" style="padding:10px 22px;font-size:13.5px">Export signed record</button><span class="mono" id="exNote" style="color:var(--dim);font-size:12px"></span></div>
 </div>
 
-<h2>07 - Proof at scale: the synthetic harness</h2>
+<h2>07 - The record store</h2>
+<div class="card">
+  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Every record you sign persists to a local store with a hash-chained audit ledger - demo runs and your own files alike. Reload the page and they are still here; verify the chain any time. Nothing leaves the browser.</p>
+  <div class="stats">
+    <div class="stat"><div class="n" id="rsRec">0</div><div class="l">signed records stored</div></div>
+    <div class="stat"><div class="n" id="rsAudit">0</div><div class="l">audit ledger entries</div></div>
+  </div>
+  <div id="rsList" style="font-family:var(--mono);font-size:12.5px;max-height:180px;overflow-y:auto"></div>
+  <div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+    <button class="run" id="rsVerify" style="padding:10px 22px;font-size:13.5px">Verify audit chain</button>
+    <span class="mono" id="rsNote" style="color:var(--dim);font-size:12px"></span>
+  </div>
+</div>
+
+<h2>08 - Proof at scale: the synthetic harness</h2>
 <div class="card">
   <p style="color:var(--dim);font-size:14px;margin-bottom:10px">Real loss footage is rare and legally radioactive. The generator writes millions of labeled losses - water, fire, storm, freeze - and the grader pre-trains on those. It ships already knowing what a covered cause looks like.</p>
   <div class="ctl" id="scales">
@@ -151,14 +165,14 @@
   <button class="run" id="hgo" style="margin-top:14px">Generate + grade a synthetic loss</button>
 </div>
 
-<h2>08 - Why it works</h2>
+<h2>09 - Why it works</h2>
 <div class="cols3">
   <div class="card"><h3>No footage required.</h3><p>Buildings already narrate themselves - flow meters, alarms, HVAC, panel events. The claim file builds from data the property and the carrier already have; photos are supporting evidence, not the backbone.</p></div>
   <div class="card"><h3>The brain learns on synthetic losses.</h3><p>Millions of simulated water, fire, storm and freeze events - every record labeled, every outcome graded. The generator writes the corpus; the grader is measured against it.</p></div>
   <div class="card"><h3>Signed records, not stories.</h3><p>Every record is hashed, timestamped, and written to an audit ledger. The insurer gets a file it can defend, not a narrative it has to re-litigate.</p></div>
 </div>
 
-<h2>09 - Where this sits</h2>
+<h2>10 - Where this sits</h2>
 <div class="card"><p style="color:var(--dim);font-size:14px">The same reconstruction engine that grades vehicle crashes grades property losses: telemetry and documents in, causality and liability graded, a signed claim-ready record out. Auto proved the pattern; property is the expansion into broader P&amp;C. Next on this track: a persistent backend for batch ingest and carrier-system connectors.</p></div>
 
 <footer>Working beta - synthetic data only. The generator writes the corpus; the grader is measured against it. Nothing on this page uploads anything.</footer>
@@ -236,6 +250,7 @@ function download(name,text){const a=document.createElement('a');a.href=URL.crea
 async function exportRecord(rows,note){
   const rec={record_type:'claim-ready outcome record',format_version:'1.0',product:'property-replay',ts:new Date().toISOString(),fields:rows};
   rec.sha256=await sha(JSON.stringify(rec.fields));
+  if(window.__storeRecord)window.__storeRecord(rec,rec.sha256);
   download('property-replay-record-'+rec.sha256.slice(0,8)+'.json',JSON.stringify(rec,null,2));
   if(note)note.textContent='signed record exported - sha-256 '+rec.sha256.slice(0,16)+'...';
 }
@@ -296,6 +311,51 @@ document.getElementById('hgo').onclick=()=>{
   v.className='verd '+(ok?'hit':'miss');
   v.textContent=ok?'VERDICT: graded cause matches the generator\'s ground truth - accuracy ledger updated.':'VERDICT: miss - written to the miss ledger; misses are graded too, never hidden.';
 };
+</script>
+<script>
+(function(){
+  const DBN='property-replay-store';let db=null,prevHash='GENESIS';
+  function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open(DBN,1);
+    r.onupgradeneeded=()=>{r.result.createObjectStore('records',{keyPath:'hash'});r.result.createObjectStore('audit',{autoIncrement:true});};
+    r.onsuccess=()=>{db=r.result;res(db);};r.onerror=()=>rej(r.error);});}
+  function os(st,m){return db.transaction(st,m).objectStore(st);}
+  function put(st,v){return new Promise((res,rej)=>{const q=os(st,'readwrite').put(v);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}
+  function count(st){return new Promise(res=>{const q=os(st,'readonly').count();q.onsuccess=()=>res(q.result);});}
+  function all(st){return new Promise(res=>{const q=os(st,'readonly').getAll();q.onsuccess=()=>res(q.result);});}
+  function has(st,k){return new Promise(res=>{const q=os(st,'readonly').get(k);q.onsuccess=()=>res(!!q.result);});}
+  const hexb=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  async function sha256(s){return hexb(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)));}
+  async function audit(type,payload){
+    const e={ts:new Date().toISOString(),type,payload_hash:await sha256(JSON.stringify(payload)),prev_hash:prevHash};
+    e.hash=await sha256(e.ts+e.type+e.payload_hash+e.prev_hash);prevHash=e.hash;await put('audit',e);}
+  async function refresh(){
+    document.getElementById('rsRec').textContent=await count('records');
+    document.getElementById('rsAudit').textContent=await count('audit');
+    const recs=(await all('records')).sort((a,b)=>(b.stored_at||'').localeCompare(a.stored_at||''));
+    document.getElementById('rsList').innerHTML=recs.map(r=>'<div style="margin:3px 0"><span style="color:var(--acc)">'+(r.hash||'').slice(0,12)+'</span> <span style="color:var(--dim)">'+(r.rec.record_type||'record')+' - stored '+String(r.stored_at).slice(0,19).replace('T',' ')+'Z</span> <a href="#" data-h="'+r.hash+'" class="rsx" style="color:var(--acc)">re-export</a></div>').join('');
+    document.querySelectorAll('.rsx').forEach(x=>x.onclick=async e=>{e.preventDefault();
+      const r=(await all('records')).find(v=>v.hash===x.dataset.h);if(!r)return;
+      const blob=new Blob([JSON.stringify(r.rec,null,2)],{type:'application/json'});
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download='property-replay-record-'+String(r.hash).slice(0,12)+'.json';a.click();URL.revokeObjectURL(a.href);});
+  }
+  window.__storeRecord=async function(rec,hash){
+    if(!hash)return false;
+    if(!db){await openDB();const a=await all('audit');if(a.length)prevHash=a[a.length-1].hash;}
+    if(await has('records',hash)){await refresh();return false;}
+    await put('records',{hash,stored_at:new Date().toISOString(),rec});
+    await audit('record.signed',{hash,type:rec.record_type||'record'});
+    await refresh();return true;
+  };
+  document.getElementById('rsVerify').onclick=async function(){
+    const note=document.getElementById('rsNote');
+    if(!db){await openDB();}
+    const a=await all('audit');let ok=0,pv='GENESIS';
+    for(const e of a){const h=await sha256(e.ts+e.type+e.payload_hash+e.prev_hash);if(e.prev_hash===pv&&h===e.hash){ok++;pv=e.hash;}}
+    note.textContent=a.length?(ok===a.length?'chain verified - '+ok+'/'+a.length+' entries, head '+pv.slice(0,12)+'...':'BROKEN at entry '+(ok+1)):'no records stored yet - sign and export one above';
+  };
+  (async()=>{try{await openDB();const a=await all('audit');if(a.length)prevHash=a[a.length-1].hash;await refresh();}catch(e){}})();
+})();
 </script>
 </body>
 </html>
