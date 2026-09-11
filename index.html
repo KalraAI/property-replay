@@ -490,9 +490,9 @@ document.getElementById('hgo10k').onclick=async()=>{
  function upd(){
    if(!g('ecH'))return;
    var H=+g('ecH').value||0,D=+g('ecD').value||0,O=+g('ecO').value||0,G=+g('ecG').value||0;
-   g('ecHD').textContent='Delta: '+(H-0.17).toFixed(1)+' adjuster hours avoided per file.';
-   g('ecDD').textContent='Delta: '+D+' days of cycle time removed.';
-   g('ecOD').textContent='Variance: '+fmt(O-G)+(O>=G?' of over-reserving avoided per file.':' of under-reserving exposed per file.');
+   g('ecHD').textContent='Delta: '+(H-0.17).toFixed(1)+' adjuster hours per file (baseline minus record review).';
+   g('ecDD').textContent='Delta: '+D+' days per file (baseline minus same-day build).';
+   g('ecOD').textContent='Difference: '+fmt(O-G)+' - the open-file assumption sits '+(O>=G?'above':'below')+' the graded figure in the record.';
  }
  ['ecH','ecD','ecO','ecG'].forEach(function(i){var e=g(i);if(e)e.oninput=upd;});
  upd();
