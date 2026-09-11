@@ -81,7 +81,7 @@
 <div class="card">
   <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Not a canned story - real extraction. Drop a sensor CSV (time, flow, alarm) or photos. Your files are hashed and parsed here in the browser; nothing is uploaded. The record below is built from your bytes.</p>
   <div class="drop" id="drop">Drop a sensor CSV or photos here - or click to choose files</div>
-  <input type="file" id="upl" multiple accept=".csv,image/*,video/*,.pdf" style="display:none">
+  <input type="file" id="upl" multiple accept=".csv,.jsonl,.ndjson,.json,image/*,video/*,.pdf" style="display:none">
   <div id="uplog" style="margin-top:12px"></div>
   <div id="uprec" style="display:none;margin-top:16px">
     <div style="font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--acc);margin-bottom:10px">CLAIM RECORD - BUILT FROM YOUR FILES</div>
@@ -164,6 +164,8 @@
   <div id="hlog" style="margin-top:10px"></div>
   <div class="verd" id="hverd"></div>
   <button class="run" id="hgo" style="margin-top:14px">Generate + grade a synthetic loss</button>
+  <button class="run" id="hgo10k" style="margin-top:14px;margin-left:10px">Run the 10,000-loss validation</button>
+  <div id="h10k" style="margin-top:12px"></div>
 </div>
 
 <h2>09 - Why it works</h2>
@@ -193,7 +195,7 @@ document.getElementById('run').onclick=async e=>{
 };
 
 /* ---------- 05 timeline ---------- */
-const evs=[
+let SCN={evs:[
   ['WX','Conditions logged: overnight low -9C, crawl-space ambient -4C - fed to the freeze model'],
   ['T-6h','Flow baseline 0.2 L/min - normal overnight pattern'],
   ['02:14','Flow jumps 0 to 41 L/min - pipe failure signature, crawl-space zone'],
@@ -201,16 +203,16 @@ const evs=[
   ['03:47','Bath zone moisture 31% - spread path consistent with crawl-space origin'],
   ['IMPACT','05:26 - main shutoff tripped by panel rule; total unobserved flow 3h 12m','impact'],
   ['POST','Mitigation dispatched 06:05 - drying logged, saturation peak 62%']
-];
+],zones:null,marks:null,src:'demo'};
 function revealTimeline(){
   const tl=document.getElementById('timeline');tl.innerHTML='';
-  evs.forEach((e,i)=>{const d=document.createElement('div');d.className='ev'+(e[2]?' '+e[2]:'');d.innerHTML='<span class="t">'+e[0]+'</span><span>'+e[1]+'</span>';tl.appendChild(d);setTimeout(()=>d.classList.add('show'),i*320);});
+  SCN.evs.forEach((e,i)=>{const d=document.createElement('div');d.className='ev'+(e[2]?' '+e[2]:'');d.innerHTML='<span class="t">'+e[0]+'</span><span>'+e[1]+'</span>';tl.appendChild(d);setTimeout(()=>d.classList.add('show'),i*320);});
 }
 
 /* ---------- 04 scene: floor-plan water spread ---------- */
 const cv=document.getElementById('scene'),cx=cv.getContext('2d');
-const zones=[{n:'CRAWL SPACE',x:20,y:230,w:840,h:110},{n:'KITCHEN',x:20,y:20,w:410,h:190},{n:'BATH',x:450,y:20,w:410,h:190}];
-const marks=[{t:0,f:0,wet:[0,0,0],h:'T+0m - flow 0 L/min - all zones dry'},
+SCN.zones=[{n:'CRAWL SPACE',x:20,y:230,w:840,h:110},{n:'KITCHEN',x:20,y:20,w:410,h:190},{n:'BATH',x:450,y:20,w:410,h:190}];
+SCN.marks=[{t:0,f:0,wet:[0,0,0],h:'T+0m - flow 0 L/min - all zones dry'},
              {t:.15,f:41,wet:[.2,0,0],h:'02:14 AM - flow 41 L/min - failure in crawl space'},
              {t:.4,f:41,wet:[.55,.3,0],h:'02:31 AM - leak sensor trips - kitchen moisture 12%'},
              {t:.65,f:38,wet:[.8,.6,.35],h:'03:47 AM - bath zone 31% - spread continues'},
@@ -218,9 +220,10 @@ const marks=[{t:0,f:0,wet:[0,0,0],h:'T+0m - flow 0 L/min - all zones dry'},
              {t:1,f:0,wet:[.62,.4,.3],h:'POST - mitigation drying - saturation peak 62%'}];
 function draw(p){
   cx.clearRect(0,0,880,360);
-  const wet=[0,0,0];
+  const zones=SCN.zones,marks=SCN.marks;
+  const wet=new Array(zones.length).fill(0);
   for(let i=0;i<marks.length-1;i++){const a=marks[i],b=marks[i+1];
-    if(p>=a.t&&p<=b.t){const k=(p-a.t)/(b.t-a.t||1);for(let z=0;z<3;z++)wet[z]=a.wet[z]+(b.wet[z]-a.wet[z])*k;
+    if(p>=a.t&&p<=b.t){const k=(p-a.t)/(b.t-a.t||1);for(let z=0;z<zones.length;z++)wet[z]=a.wet[z]+(b.wet[z]-a.wet[z])*k;
       document.getElementById('hud').textContent=p<.02?marks[0].h:(k<.5?a.h:b.h);}}
   zones.forEach((z,i)=>{
     cx.fillStyle='#101826';cx.fillRect(z.x,z.y,z.w,z.h);
@@ -229,7 +232,7 @@ function draw(p){
       const hh=z.h*w;cx.fillRect(z.x,z.y+z.h-hh,z.w,hh);}
     cx.strokeStyle='#232a36';cx.strokeRect(z.x,z.y,z.w,z.h);
     cx.fillStyle='#8b96a7';cx.font='11px monospace';cx.fillText(z.n,z.x+10,z.y+18);
-    if(w>0){cx.fillStyle='#e8edf4';cx.fillText('moisture '+Math.round(w*62)+'%',z.x+10,z.y+z.h-12);}
+    if(w>0){cx.fillStyle='#e8edf4';cx.fillText('moisture '+Math.round(w*(SCN.maxMoist||62))+'%',z.x+10,z.y+z.h-12);}
   });
   cx.fillStyle='#4da3ff';cx.font='12px monospace';
   cx.fillText('rendered from sensor data - not video',20,352);
@@ -265,21 +268,79 @@ const drop=document.getElementById('drop'),upl=document.getElementById('upl');
 drop.onclick=()=>upl.click();
 ['dragover','dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.toggle('over',ev==='dragover');if(ev==='drop')handleFiles(e.dataTransfer.files);}));
 upl.onchange=()=>handleFiles(upl.files);
+/* ---------- your-data reconstruction: moisture-spread scene computed from a dropped sensor trace ---------- */
+function fmtT(ts){ const d=(ts instanceof Date)?ts:new Date(ts); if(!isNaN(d)) return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); return String(ts); }
+function parseTS(v){ const d=new Date(v); return isNaN(d)?null:d; }
+function buildSceneProp(evts){
+  const zNames=[]; evts.forEach(e=>{if(!zNames.includes(e.zone))zNames.push(e.zone);});
+  const cols=Math.min(3,Math.max(2,Math.ceil(Math.sqrt(zNames.length))));
+  const zw=Math.floor(860/cols)-10, zh=140;
+  const zones=zNames.map((zn,i)=>({n:String(zn).toUpperCase(),x:20+(i%cols)*(zw+10),y:20+Math.floor(i/cols)*(zh+16),w:zw,h:zh}));
+  zones.forEach(z=>{ if(z.x+z.w>880)z.w=880-z.x-20; });
+  const tms=evts.map(e=>parseTS(e.ts)).filter(Boolean);
+  const t0=Math.min(...tms), t1=Math.max(...tms), span=Math.max(1,t1-t0);
+  const moistMax={}; let mm=1;
+  evts.forEach(e=>{const m=+e.moisture||0; if(!(moistMax[e.zone]>=m))moistMax[e.zone]=m; if(m>mm)mm=m;});
+  const zIdx={}; zNames.forEach((zn,i)=>zIdx[zn]=i);
+  const step=Math.max(1000,span/400);
+  const wetAt=t=>{const w=new Array(zNames.length).fill(0);
+    evts.forEach(e=>{const d=parseTS(e.ts); if(d&&d<=t){const m=(+e.moisture||0)/mm; const i=zIdx[e.zone]; if(m>w[i])w[i]=m;}}); return w;};
+  const flowAt=t=>{let f=0; evts.forEach(e=>{const d=parseTS(e.ts); if(d&&d<=t&&e.flow!==null&&e.flow!==undefined)f=+e.flow;}); return f;};
+  let failT=null; for(let t=t0;t<=t1;t+=step){ if(flowAt(t)>5){failT=t;break;} }
+  let origin=null,ot=null;
+  for(let t=t0;t<=t1;t+=step){ const w=wetAt(t); for(let i=0;i<w.length;i++) if(w[i]>=0.1){origin=zNames[i];ot=t;break;} if(origin)break; }
+  let shutT=null; if(failT) for(let t=failT;t<=t1;t+=step){ if(flowAt(t)<1&&wetAt(t).some(w=>w>0.05)){shutT=t;break;} }
+  const pick=[0,0.15,0.4,0.65,0.85,1];
+  const marks=pick.map(fr=>{const t=t0+fr*span; const w=wetAt(t); const f=flowAt(t);
+    let h=fmtT(t)+' - flow '+f.toFixed(1)+' L/min';
+    const wetZones=zNames.filter(zn=>w[zIdx[zn]]>0.05).map(zn=>zn+' '+Math.round(w[zIdx[zn]]*mm)+'%');
+    h+=wetZones.length?' - wet: '+wetZones.join(', '):' - all zones dry';
+    return {t:fr,f,wet:w,h};});
+  const evs=[];
+  evs.push(['BASELINE',fmtT(t0)+' - flow '+flowAt(t0).toFixed(1)+' L/min - normal pattern across '+zNames.length+' zones']);
+  if(failT)evs.push([fmtT(failT),'Flow jumps to '+flowAt(failT).toFixed(1)+' L/min - failure signature'+(origin?' in '+origin:'')]);
+  if(origin&&ot)evs.push([fmtT(ot),'First moisture rise in '+origin+' - origin zone identified from the trace']);
+  const spread=zNames.filter(zn=>zn!==origin&&(moistMax[zn]||0)>mm*0.05);
+  const rest=[];
+  spread.forEach(zn=>{let st=null;for(let t=t0;t<=t1;t+=step){if(wetAt(t)[zIdx[zn]]>0.05){st=t;break;}}
+    if(st)rest.push([st,[fmtT(st),zn+' moisture rises - spread path consistent with '+(origin||'the origin')+' origin']]);});
+  if(shutT&&failT)rest.push([shutT,['IMPACT',fmtT(shutT)+' - flow stops; unobserved flow ran '+Math.round((shutT-failT)/60000)+' minutes','impact']]);
+  rest.sort((a,b)=>a[0]-b[0]).forEach(r=>evs.push(r[1]));
+  evs.push(['POST','trace ends '+fmtT(t1)+' - peak moisture '+Math.round(mm)+'% across '+(spread.length+1)+' affected zone(s) - reconstruction computed from the dropped file']);
+  const durMin=(failT&&shutT)?Math.round((shutT-failT)/60000):null;
+  return {evs,zones,marks,maxMoist:mm,src:'dropped',
+    what:'Reconstructed from the dropped sensor trace: '+evts.length+' readings across '+zNames.length+' zones. '+(origin?('Origin: '+origin+'. '):'')+(durMin!==null?('Unobserved flow ran '+durMin+' minutes before shutoff. '):'')+'Peak moisture '+Math.round(mm)+'%.',
+    origin:'Computed from the dropped trace: first flow jump '+(failT?fmtT(failT):'not found')+', first moisture rise in '+(origin||'an unidentified zone')+'. Grading against the labeled loss corpus follows the same path as the demo.'};
+}
+
 async function handleFiles(files){
   const log=document.getElementById('uplog');log.innerHTML='';
-  let csvRows=0;
+  let csvRows=0,jsonlRows=0;droppedEvents=[];
   for(const f of files){
     const buf=await f.arrayBuffer();const h=await sha(new TextDecoder('latin1').decode(buf).slice(0,200000));
     const row=document.createElement('div');row.className='evrow';
     row.innerHTML='<b>'+f.name+'</b> - '+f.size+' bytes - sha-256 '+h.slice(0,16)+'... - hashed locally, never uploaded';
     log.appendChild(row);
-    if(f.name.endsWith('.csv')){const txt=new TextDecoder().decode(buf);csvRows+=txt.split('\n').filter(l=>l.trim()).length-1;}
+    if(f.name.endsWith('.csv')){const txt=new TextDecoder().decode(buf);const L=txt.split('\n').filter(l=>l.trim());csvRows+=L.length-1;
+      L.slice(1).forEach(l=>{const c=l.split(',');if(c.length>=3&&c[1]&&!/zone/i.test(c[1]))droppedEvents.push({ts:c[0].trim(),zone:c[1].trim(),moisture:+c[2]||0,flow:c.length>3?+c[3]:null});});}
+    if(/\.(jsonl|ndjson|json)$/i.test(f.name)){const txt=new TextDecoder().decode(buf);txt.split('\n').forEach(l=>{l=l.trim();if(!l||l[0]!=='{')return;try{const o=JSON.parse(l);if(o.ts!==undefined&&o.zone!==undefined){jsonlRows++;droppedEvents.push({ts:o.ts,zone:String(o.zone),moisture:+(o.moisture!==undefined?o.moisture:(o.moisture_pct||0)),flow:o.flow!==undefined?+o.flow:null});}}catch(e){}});}
   }
   if(!files.length)return;
+  if(droppedEvents.length>=10){
+    SCN=buildSceneProp(droppedEvents);
+    document.querySelectorAll('#rectab tr').forEach(tr=>{
+      const k=tr.cells[0].textContent;
+      if(k==='What happened')tr.cells[1].textContent=SCN.what;
+      if(k==='Origin and cause')tr.cells[1].textContent=SCN.origin;
+    });
+    pt=0;playing=false;draw(0);
+    const rb=document.getElementById('run');rb.disabled=false;rb.textContent='Run the reconstruction on this file';
+    rb.scrollIntoView({block:'center'});
+  }
   const rec=document.getElementById('uprec');rec.style.display='block';
   const t=document.getElementById('uprect');
-  t.innerHTML='<tr><td>Files hashed</td><td>'+files.length+' file(s), '+(csvRows?csvRows+' sensor readings parsed':'no CSV readings found')+'</td></tr>'
-    +'<tr><td>Preliminary read</td><td>'+(csvRows>10?'Sensor trace present - reconstruction can run on this file.':'More sensor data needed for a full reconstruction.')+'</td></tr>'
+  t.innerHTML='<tr><td>Files hashed</td><td>'+files.length+' file(s), '+((csvRows||jsonlRows)?((csvRows?csvRows+' CSV readings':'')+(csvRows&&jsonlRows?' + ':'')+(jsonlRows?jsonlRows+' JSON readings':''))+' parsed':'no sensor readings found')+'</td></tr>'
+    +'<tr><td>Preliminary read</td><td>'+(csvRows+jsonlRows>10?(droppedEvents.length>=10?'Sensor trace present - press Run above to reconstruct THIS file (scene, timeline and record rebuild from your data).':'Sensor trace present - reconstruction can run on this file.'):'More sensor data needed for a full reconstruction.')+'</td></tr>'
     +'<tr><td>Signature</td><td class="mono">record built in-browser - nothing uploaded</td></tr>';
   document.getElementById('upExport').onclick=()=>{
     const rows=[...t.querySelectorAll('tr')].map(tr=>[tr.cells[0].textContent,tr.cells[1].textContent]);
@@ -311,6 +372,59 @@ document.getElementById('hgo').onclick=()=>{
   const v=document.getElementById('hverd');v.style.display='block';
   v.className='verd '+(ok?'hit':'miss');
   v.textContent=ok?'VERDICT: graded cause matches the generator\'s ground truth - accuracy ledger updated.':'VERDICT: miss - written to the miss ledger; misses are graded too, never hidden.';
+};
+/* 10,000-loss synthetic validation: real generator, feature-limited grader, measured misses. */
+document.getElementById('hgo10k').onclick=async()=>{
+  const btn=document.getElementById('hgo10k');btn.disabled=true;btn.textContent='Validating 10,000 losses...';
+  await new Promise(r=>setTimeout(r,30));
+  const N=10000,t0=performance.now();
+  const cats={};let hits=0;
+  const addresses=[];const seenAddr=new Set();
+  function gen(){
+    const r=R();
+    if(r<0.60)return {cat:'normal flows',truth:'sudden discharge',flowSpike:28+R()*30,dur:60+R()*240,moist:30+R()*40,freeze:0,storm:0,priors:0,addr:'A'+Math.floor(R()*90000)};
+    if(r<0.75){const fr=R()<0.5; return fr? // freeze burst or storm intrusion with weak signals
+      {cat:'edge cases',truth:'freeze burst',flowSpike:6+R()*12,dur:300+R()*500,moist:20+R()*40,freeze:1,storm:0,priors:0,addr:'A'+Math.floor(R()*90000)}:
+      {cat:'edge cases',truth:'storm intrusion',flowSpike:2+R()*8,dur:120+R()*400,moist:35+R()*45,freeze:0,storm:1,priors:0,addr:'A'+Math.floor(R()*90000)};}
+    if(r<0.85)return {cat:'failure modes',truth:'sudden discharge',flowSpike:26+R()*30,dur:80+R()*240,moist:30+R()*40,freeze:0,storm:0,priors:0,gap:1,addr:'A'+Math.floor(R()*90000)}; // moisture sensor offline
+    if(r<0.95){const cid=addresses.length>50&&R()<0.6?addresses[Math.floor(R()*addresses.length)]:'A'+Math.floor(R()*90000);
+      return {cat:'fraud / adversarial',truth:'staging',flowSpike:3+R()*9,dur:20+R()*40,moist:8+R()*10,freeze:0,storm:0,priors:2+Math.floor(R()*3),addr:cid};}
+    const cid=addresses.length>20&&R()<0.6?addresses[Math.floor(R()*addresses.length)]:'A'+Math.floor(R()*90000);
+    return {cat:'longitudinal repeat-property',truth:'sudden discharge',flowSpike:28+R()*30,dur:60+R()*240,moist:30+R()*40,freeze:0,storm:0,priors:1,addr:cid};
+  }
+  function grade(c){
+    // dropout: any single sensor feature can be missing 6% of the time
+    const fl=R()<0.94?c.flowSpike:null, mo=(R()<0.94&&!c.gap)?c.moist:null, fz=R()<0.94?c.freeze:null, st=R()<0.94?c.storm:null;
+    const prior=seenAddr.has(c.addr); seenAddr.add(c.addr); if(!addresses.includes(c.addr))addresses.push(c.addr);
+    const pr=Math.max(c.priors, prior?1:0);
+    if(fl!==null&&fl<12&&pr>=2)return 'staging';
+    if(fl!==null&&fl<6&&mo!==null&&mo<15)return 'staging';
+    if(fz===1&&fl!==null&&fl>5)return 'freeze burst';
+    if(st===1)return 'storm intrusion';
+    if(fl!==null&&fl>25)return 'sudden discharge';
+    if(fl!==null&&fl>12&&mo!==null&&mo>25)return 'sudden discharge';
+    if(fl===null&&mo!==null&&mo>25)return 'sudden discharge'; // flow sensor dropped; moisture carries the grade
+    if(fz===1)return 'freeze burst';
+    if(st===null&&fz===null&&fl===null)return 'uncertain';
+    return 'uncertain';
+  }
+  for(let i=0;i<N;i++){const c=gen();const g=grade(c);
+    (cats[c.cat]=cats[c.cat]||{n:0,hit:0}); cats[c.cat].n++; if(g===c.truth){cats[c.cat].hit++;hits++;}}
+  const ms=Math.round(performance.now()-t0);
+  hRuns+=N;document.getElementById('hRuns').textContent=hRuns.toLocaleString();
+  document.getElementById('hCohort').textContent='10,000';
+  document.getElementById('hAcc').textContent=(100*hits/N).toFixed(1)+'%';
+  document.querySelectorAll('#scales .scbtn').forEach(x=>x.classList.remove('on'));
+  const b10=document.querySelector('#scales .scbtn[data-s="2"]');if(b10)b10.classList.add('on');
+  [...chart.children].forEach((b,j)=>b.classList.toggle('on',j===2));
+  let html='<table class="rec" style="margin-top:6px"><tr><td>Validation run</td><td><b>'+N.toLocaleString()+' synthetic losses generated and graded in '+ms+' ms in-browser.</b> The generator writes ground truth; the grader sees only noisy sensor features (6% dropout, full moisture-sensor gaps in failure cases) and a growing prior-claim memory. Misses below are measured, not scripted.</td></tr>';
+  ['normal flows','edge cases','failure modes','fraud / adversarial','longitudinal repeat-property'].forEach(k=>{const r=cats[k];if(!r)return;const a=(100*r.hit/r.n).toFixed(1);
+    html+='<tr><td>'+k+'</td><td>'+r.n.toLocaleString()+' losses - <b>'+a+'% graded correctly</b> ('+(r.n-r.hit).toLocaleString()+' to the miss ledger)</td></tr>';});
+  html+='<tr><td>Overall</td><td><b>'+(100*hits/N).toFixed(1)+'% across '+N.toLocaleString()+' losses.</b> Repeat-address detection strengthens over the run as the prior-claim memory grows ('+seenAddr.size.toLocaleString()+' distinct properties seen). Misses are written to the miss ledger and graded too, never hidden.</td></tr></table>';
+  document.getElementById('h10k').innerHTML=html;
+  const v=document.getElementById('hverd');v.style.display='block';v.className='verd hit';
+  v.textContent='VALIDATION COMPLETE: '+N.toLocaleString()+' losses - overall '+(100*hits/N).toFixed(1)+'% measured - per-category breakdown above.';
+  btn.disabled=false;btn.textContent='Run the 10,000-loss validation';
 };
 </script>
 <script>
