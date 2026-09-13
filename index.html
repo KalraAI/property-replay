@@ -317,8 +317,17 @@ function buildSceneProp(evts){
   rest.sort((a,b)=>a[0]-b[0]).forEach(r=>evs.push(r[1]));
   evs.push(['POST','trace ends '+fmtT(t1)+' - peak moisture '+Math.round(mm)+'% across '+(spread.length+1)+' affected zone(s) - reconstruction computed from the dropped file']);
   const durMin=(failT&&shutT)?Math.round((shutT-failT)/60000):null;
-  return {evs,zones,marks,maxMoist:mm,src:'dropped',
-    what:'Reconstructed from the dropped sensor trace: '+evts.length+' readings across '+zNames.length+' zones. '+(origin?('Origin: '+origin+'. '):'')+(durMin!==null?('Unobserved flow ran '+durMin+' minutes before shutoff. '):'')+'Peak moisture '+Math.round(mm)+'%.',
+  // data quality + coverage: property/stores legitimately have availability gaps,
+  // so grade what arrived and bound the reconstruction to observed zones, honestly.
+  let maxGapMs=0;for(let gi=1;gi<tms.length;gi++){const g=tms[gi]-tms[gi-1];if(g>maxGapMs)maxGapMs=g;}
+  const spanMin=(t1-t0)/60000;
+  let dq,db;
+  if(evts.length<5||spanMin<2){dq='insufficient';db='too few readings to bound the loss window - pull the full sensor export for this site';}
+  else if(evts.length<20||maxGapMs>Math.max(300000,(t1-t0)/4)){dq='degraded';db='sparse or gappy readings - origin and timing are bounds, not exact values';}
+  else{dq='high';db='regular readings across the loss window';}
+  const cov='Coverage: bounded to '+zNames.length+' zone(s) with sensor readings ('+zNames.join(', ')+') - areas without sensors produce no stream and are not establishable from this file.';
+  return {evs,zones,marks,maxMoist:mm,src:'dropped',dataQuality:dq,dataQualityBasis:db,coverage:cov,
+    what:'Reconstructed from the dropped sensor trace: '+evts.length+' readings across '+zNames.length+' zones. '+(origin?('Origin: '+origin+'. '):'')+(durMin!==null?('Unobserved flow ran '+durMin+' minutes before shutoff. '):'')+'Peak moisture '+Math.round(mm)+'%. Data quality: '+dq+' - '+db+'. '+cov,
     origin:'Computed from the dropped trace: first flow jump '+(failT?fmtT(failT):'not found')+', first moisture rise in '+(origin||'an unidentified zone')+'. Grading against the labeled loss corpus follows the same path as the demo.'};
 }
 
