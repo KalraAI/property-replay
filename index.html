@@ -98,10 +98,10 @@
     <div class="stage"><div class="dot"></div>Finding the affected areas: kitchen, bath, crawl space</div>
     <div class="stage"><div class="dot"></div>Building the timeline: readings by time and area</div>
     <div class="stage"><div class="dot"></div>Finding the first readings that crossed a warning level</div>
-    <div class="stage"><div class="dot"></div>Comparing it with our library of made-up losses</div>
+    <div class="stage"><div class="dot"></div>Comparing it with our library of synthetic losses</div>
     <div class="stage"><div class="dot"></div>Sealing the record: fingerprint, time stamp, audit log</div>
   </div>
-  <p class="starthere">START HERE - press Run. The made-up example builds a sealed replay in about 10 seconds.</p>
+  <p class="starthere">START HERE - press Run. The synthetic example builds a sealed replay in about 10 seconds.</p>
   <button class="run pulse" id="run">Run reconstruction</button>
 </div>
 
@@ -118,11 +118,11 @@
 <h2>06 - The record</h2>
 <div class="card">
   <table class="rec" id="rectab">
-    <tr><td>What the example shows</td><td>Made-up example: water flow started in the crawl space and ran 3h 12m before the leak sensor went off. Water reached the kitchen and bath subfloor.</td></tr>
-    <tr><td>Timeline</td><td>In the made-up example, the flow and moisture readings cross their warning levels while the weather input shows -9C. The demo does not decide the cause or rule anything out.</td></tr>
-    <tr><td>Comparison with made-up cases</td><td>Made-up example: 91% similar to cases in our made-up library. This is not a finding on cause or coverage.</td></tr>
+    <tr><td>What the example shows</td><td>Synthetic example: water flow started in the crawl space and ran 3h 12m before the leak sensor went off. Water reached the kitchen and bath subfloor.</td></tr>
+    <tr><td>Timeline</td><td>In the synthetic example, the flow and moisture readings cross their warning levels while the weather input shows -9C. The demo does not decide the cause or rule anything out.</td></tr>
+    <tr><td>Comparison with synthetic cases</td><td>Synthetic example: 91% similar to cases in our synthetic library. This is not a finding on cause or coverage.</td></tr>
     <tr><td>Coverage</td><td>This demo does not look at coverage. Policy wording, exclusions, maintenance history and human review are outside it.</td></tr>
-    <tr><td>Damage and cost</td><td>Two areas affected, subfloor 62% wet. Example contractor estimate $18,400, within 4% of the made-up comparison range.</td></tr>
+    <tr><td>Damage and cost</td><td>Two areas affected, subfloor 62% wet. Example contractor estimate $18,400, within 4% of the synthetic comparison range.</td></tr>
     <tr><td>Cycle time</td><td>Example run time: <b>6 minutes 40 seconds.</b> Demo figure, not a real-world benchmark.</td></tr>
     <tr><td>Evidence</td><td><span class="pill">sensor CSV fingerprinted</span><span class="pill">photos fingerprinted</span><span class="pill">weather feed fingerprinted</span><span class="pill">estimate fingerprinted</span></td></tr>
     <tr><td>Outside information - chosen for this example</td><td><div class="mono" style="font-size:12px;line-height:1.8"><div><b style="color:var(--ok)">USED</b> weather - overnight low of -9C; added for freeze, storm, flood and wind examples</div><div><b style="color:var(--ok)">USED</b> time and season - 2:14 AM in February</div><div><b style="color:var(--ok)">USED</b> occupancy - home recorded as occupied and heated</div><div><b style="color:var(--ok)">USED</b> utility log - no power or heating gap recorded</div><div><b style="color:var(--ok)">USED</b> sensor health - all sensors passed their self-check at 02:00</div><div><b style="color:var(--ok)">USED</b> emergency response - cleanup crew on site after 3h 40m</div><div><b style="color:var(--warn)">EXCLUDED</b> nearby construction - no permits within 200 m</div><div><b style="color:var(--warn)">EXCLUDED</b> building codes - not needed for this example</div></div><div style="margin-top:6px;color:var(--dim);font-size:12.5px">What gets used depends on the example. For an appliance leak, weather would be left out and the reason shown here. This example keeps it. Each item is either used or left out, with a reason.</div></td></tr>
@@ -154,7 +154,7 @@
   </div>
 </div>
 
-<h2>08 - Testing at scale with made-up data</h2>
+<h2>08 - Testing at scale with synthetic data</h2>
 <div class="card">
   <p style="color:var(--dim);font-size:14px;margin-bottom:10px">Real loss footage is rare and hard to use legally. So we make up labeled losses (water, fire, storm, freeze) and the system practices on those first.</p>
   <div class="ctl" id="scales">
@@ -165,15 +165,15 @@
     <button class="scbtn" data-s="4">100,000 losses</button>
   </div>
   <div class="stats">
-    <div class="stat"><div class="n" id="hCohort">100</div><div class="l">made-up properties</div></div>
-    <div class="stat"><div class="n" id="hCorpus">52K</div><div class="l">made-up losses in the library</div></div>
-    <div class="stat"><div class="n" id="hAcc">86.1%</div><div class="l">correct on the made-up test set</div></div>
+    <div class="stat"><div class="n" id="hCohort">100</div><div class="l">synthetic properties</div></div>
+    <div class="stat"><div class="n" id="hCorpus">52K</div><div class="l">synthetic losses in the library</div></div>
+    <div class="stat"><div class="n" id="hAcc">86.1%</div><div class="l">correct on the synthetic test set</div></div>
     <div class="stat"><div class="n" id="hRuns">0</div><div class="l">losses scored this session</div></div>
   </div>
   <div class="chartwrap"><div class="chart" id="accChart"></div></div>
   <div id="hlog" style="margin-top:10px"></div>
   <div class="verd" id="hverd"></div>
-  <button class="run" id="hgo" style="margin-top:14px">Generate and score a made-up loss</button>
+  <button class="run" id="hgo" style="margin-top:14px">Generate and score a synthetic loss</button>
   <button class="run" id="hgo10k" style="margin-top:14px;margin-left:10px">Run the 10,000-loss test</button>
   <div id="h10k" style="margin-top:12px"></div>
 </div>
@@ -181,13 +181,15 @@
 <h2>09 - How it works</h2>
 <div class="cols3">
   <div class="card"><h3>No video needed.</h3><p>Buildings already record what happens: water flow, alarms, heating, electrical panel events. The replay is built from data the property and the insurer already have. Photos help, but they're not required.</p></div>
-  <div class="card"><h3>It learns from made-up losses.</h3><p>Made-up water, fire, storm and freeze losses, each with a known answer. We write the cases, then score the system against them.</p></div>
+  <div class="card"><h3>It learns from synthetic losses.</h3><p>Synthetic water, fire, storm and freeze losses, each with a known answer. We write the cases, then score the system against them.</p></div>
   <div class="card"><h3>Sealed records, not stories.</h3><p>Every record is fingerprinted, time-stamped and written to an audit log. You get a record you can check, not a story you have to piece together again.</p></div>
 </div>
 
 <h2>10 - What this is and isn't</h2>
 <div class="card"><p style="color:var(--dim);font-size:14px">Property Replay is in beta. It replays the data you give it and shows what's missing. A person makes the call. It does not decide cause, liability or coverage.</p></div>
 
+<div class="card" id="real-data"><p style="font-size:14px;margin-bottom:8px"><strong>Real-world numbers (public data)</strong></p><p style="color:var(--dim);font-size:14px;margin-bottom:6px">Water damage and freezing made up 27.6% of homeowners insurance losses in 2022. Source: Insurance Information Institute (ISO data), <a href="https://www.iii.org/fact-statistic/facts-statistics-homeowners-and-renters-insurance" target="_blank" rel="noopener" style="color:var(--acc)">Facts + Statistics: Homeowners and renters insurance</a>.</p><p style="color:var(--dim);font-size:14px;margin-bottom:6px">From 2018 to 2022, water damage and freezing claims averaged $13,954 each, at 1.61 claims per 100 insured homes a year. Same source.</p></div>
+<div class="card" id="data-sources"><p style="color:var(--dim);font-size:14px"><strong>Data sources.</strong> The real-world numbers above come from the public sources linked next to each one. The example loss, sensor readings, weather, contractor estimate and test properties are synthetic data, written by us for this demo. We kept the example synthetic on purpose: a real case would mean real people's data. No other government, regulator or public data is used.</p></div>
 <footer>Copyright Placid Lake LLC 2026</footer>
 </div>
 
