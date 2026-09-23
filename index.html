@@ -65,97 +65,98 @@
 </head>
 <body>
 <div class="wrap">
-<header><div class="logo">PROPERTY REPLAY</div><div class="tag">WORKING BETA - RUN THE FLOW</div></header>
+<header><div class="logo">PROPERTY REPLAY</div><div class="tag">BETA - TRY IT</div></header>
 
-<h1>A property loss is reported.<br>The available sensor records are still being assembled.<br><em>Replay the supplied evidence before making a claim decision.</em></h1>
-<p class="sub">This working beta hashes supplied files, parses unit-bearing property sensor data, renders an observed timeline and exports a signed extraction record. Missing moisture, flow, photo or document channels remain unavailable; the page does not determine cause or coverage.</p>
+<h1>The truth, replayed.<br><em>Facts, not guesswork.</em></h1>
+<p class="sub"><strong>There's been damage at the property. The evidence is still coming in. Replay what's here before you decide anything.</strong></p>
+<p class="sub">Replayed from the building's own sensors: water flow, leak and smoke alarms, minute by minute. Every replay is sealed. Change one number and it shows. If a piece of data is missing, we say so. We don't guess.</p>
 
 <h2>01 - The input</h2>
 <div class="grid">
-  <div class="card"><h3>Phone photos (optional)</h3><p>A walkthrough video or a few photos from the owner's phone, if anyone took them. Photos are optional. Without them, the output is limited to the supplied sensors, alarms and documents.</p><p class="mono" style="margin-top:8px">walkthrough_2026-09-02.mp4 - 41s - optional</p></div>
-  <div class="card"><h3>Sensor and alarm trace</h3><p>Water-flow meter, leak sensors, smoke and CO alarms, HVAC and panel events - the building's own account of itself, minute by minute.</p><p class="mono" style="margin-top:8px">sensors_8821.csv - flow 0&gt;41 L/min - 02:14 AM</p></div>
-  <div class="card"><h3>External conditions + documents</h3><p>Weather feed pulled for freeze, storm and flood scenarios and graded as an input, not assumed - excluded with a stated reason when the cause is internal, like an appliance leak; contractor estimate and invoices hashed into the file.</p><p class="mono" style="margin-top:8px">wx_02-14Z.json - freeze -9C - estimate_v2.pdf</p></div>
+  <div class="card"><h3>Phone photos (optional)</h3><p>A walkthrough video or a few photos from the owner's phone, if anyone took them. No photos? The replay still works from the sensors, alarms and documents.</p><p class="mono" style="margin-top:8px">walkthrough_2026-09-02.mp4 - 41s - optional</p></div>
+  <div class="card"><h3>Sensors and alarms</h3><p>Water flow, leak sensors, smoke and CO alarms, heating and electrical panel events, recorded by the building itself, minute by minute.</p><p class="mono" style="margin-top:8px">sensors_8821.csv - flow 0&gt;41 L/min - 02:14 AM</p></div>
+  <div class="card"><h3>Weather and documents</h3><p>Weather is added for freeze, storm and flood losses as an input, not assumed. When it doesn't apply, like an appliance leak, we leave it out and say why. The contractor estimate and invoices are fingerprinted into the file.</p><p class="mono" style="margin-top:8px">wx_02-14Z.json - freeze -9C - estimate_v2.pdf</p></div>
 </div>
 
-<h2>02 - Run it on your own files <span class="tag" style="font-size:10px;vertical-align:middle">ALPHA V0.1</span></h2>
+<h2>02 - Try it on your own files <span class="tag" style="font-size:10px;vertical-align:middle">ALPHA V0.1</span></h2>
 <div class="card">
-  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Not a canned story - real extraction. Drop a sensor CSV (time, flow, alarm) or photos. Your files are hashed and parsed here in the browser; nothing is uploaded. The record below is built from your bytes.</p>
-  <div class="drop" id="drop">Drop a sensor CSV or photos here - or click to choose files</div>
+  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Try it with your own file. Drop in a sensor CSV (time, flow, alarm) or photos. Everything stays in your browser. Nothing is uploaded. The record below is built from your file.</p>
+  <div class="drop" id="drop">Drop a sensor CSV or photos here, or click to choose a file</div>
   <input type="file" id="upl" multiple accept=".csv,.jsonl,.ndjson,.json,image/*,video/*,.pdf" style="display:none">
   <div id="uplog" style="margin-top:12px"></div>
   <div id="uprec" style="display:none;margin-top:16px">
     <div style="font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--acc);margin-bottom:10px">CLAIM RECORD - BUILT FROM YOUR FILES</div>
     <table class="rec" id="uprect"></table>
-    <div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="run" id="upExport" style="padding:10px 22px;font-size:13.5px">Export signed record</button><span class="mono" id="upExNote" style="color:var(--dim);font-size:12px"></span></div>
+    <div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="run" id="upExport" style="padding:10px 22px;font-size:13.5px">Export sealed record</button><span class="mono" id="upExNote" style="color:var(--dim);font-size:12px"></span></div>
   </div>
 </div>
 
-<h2>03 - Run the reconstruction</h2>
+<h2>03 - Run the replay</h2>
 <div class="card">
   <div id="stages">
-    <div class="stage"><div class="dot"></div>Ingesting photos, sensor trace and documents</div>
-    <div class="stage"><div class="dot"></div>Extracting the affected zones - kitchen, bath, crawl space</div>
-    <div class="stage"><div class="dot"></div>Building the observed timeline - readings by time and zone</div>
-    <div class="stage"><div class="dot"></div>Locating the first observed threshold crossings</div>
-    <div class="stage"><div class="dot"></div>Comparing observed features with the synthetic reference corpus</div>
-    <div class="stage"><div class="dot"></div>Signing the record - hash, timestamp, audit ledger</div>
+    <div class="stage"><div class="dot"></div>Reading the photos, sensor data and documents</div>
+    <div class="stage"><div class="dot"></div>Finding the affected areas: kitchen, bath, crawl space</div>
+    <div class="stage"><div class="dot"></div>Building the timeline: readings by time and area</div>
+    <div class="stage"><div class="dot"></div>Finding the first readings that crossed a warning level</div>
+    <div class="stage"><div class="dot"></div>Comparing it with our library of made-up losses</div>
+    <div class="stage"><div class="dot"></div>Sealing the record: fingerprint, time stamp, audit log</div>
   </div>
-  <p class="starthere">START HERE - press Run. The fictional example builds a signed replay record in about 10 seconds.</p>
+  <p class="starthere">START HERE - press Run. The made-up example builds a sealed replay in about 10 seconds.</p>
   <button class="run pulse" id="run">Run reconstruction</button>
 </div>
 
-<h2>04 - Property reconstruction - rendered from data, not video</h2>
+<h2>04 - The replay - drawn from data, not video</h2>
 <div class="card">
-  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">No footage below. Every frame is rendered from the sensor trace and the alarm stream - zone states, flow rates, timestamps, nothing else. An adjuster watches the loss happen; counsel replays it minute by minute. The owner's photos never had to leave their phone.</p>
+  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">There's no video below. Every frame is drawn from the sensors and alarms: area readings, flow rates and times, nothing else. You can watch the damage spread, then step through it minute by minute. The owner's photos never have to leave their phone.</p>
   <canvas id="scene" width="880" height="360"></canvas>
   <div class="ctl"><button class="run" id="playBtn" style="padding:10px 24px;font-size:14px">Play</button><input type="range" id="scrub" min="0" max="1000" value="0"><span id="hud">T+0m - flow 0 L/min - all zones dry</span></div>
 </div>
 
-<h2>05 - The 4D timeline</h2>
+<h2>05 - The timeline</h2>
 <div class="card"><div id="timeline"></div></div>
 
-<h2>06 - The claim-ready record</h2>
+<h2>06 - The record</h2>
 <div class="card">
   <table class="rec" id="rectab">
-    <tr><td>What happened</td><td>Supply line failed in the crawl space; unobserved flow ran 3h 12m before the leak sensor tripped; water reached kitchen and bath subfloor.</td></tr>
-    <tr><td>Observed chronology</td><td>Fictional scenario chronology: flow and moisture thresholds occur during a -9C weather input. The demo does not determine cause or rule out alternatives.</td></tr>
-    <tr><td>Synthetic pattern comparison</td><td>Fictional feature match: 91% against the generated reference corpus. This is not a cause or coverage conclusion.</td></tr>
-    <tr><td>Coverage boundary</td><td>Coverage is not evaluated. Policy language, exclusions, maintenance history and human review are outside this demo.</td></tr>
-    <tr><td>Severity and cost</td><td>Two zones affected, subfloor saturation 62%. Contractor estimate $18,400 - within 4% of the graded envelope for this loss class.</td></tr>
-    <tr><td>Cycle time</td><td>Fictional example runtime: <b>6 minutes 40 seconds.</b> This is a modeled demo value, not a production benchmark.</td></tr>
-    <tr><td>Evidence</td><td><span class="pill">sensor CSV hashed</span><span class="pill">photos hashed</span><span class="pill">weather feed hashed</span><span class="pill">estimate hashed</span></td></tr>
-    <tr><td>External evidence - selected by scenario</td><td><div class="mono" style="font-size:12px;line-height:1.8"><div><b style="color:var(--ok)">USED</b> weather feed - freeze loss: overnight low -9C is the causal mechanism; pulled for freeze, storm, flood and wind scenarios</div><div><b style="color:var(--ok)">USED</b> time of day + season - 2:14 AM in February is the peak-risk window for this loss class</div><div><b style="color:var(--ok)">USED</b> occupancy - home occupied and heated; the vacancy exclusion is screened out</div><div><b style="color:var(--ok)">USED</b> utility log - power and heat continuous; outage-driven heat loss ruled out</div><div><b style="color:var(--ok)">USED</b> sensor health - all sensors self-checked at 02:00; the readings stand</div><div><b style="color:var(--ok)">USED</b> emergency response - mitigation crew on site in 3h 40m; severity bounded</div><div><b style="color:var(--warn)">EXCLUDED</b> nearby construction - no permits within 200 m; vibration is not a plausible cause</div><div><b style="color:var(--warn)">EXCLUDED</b> building codes - mechanical failure; no structural or compliance question in this loss</div></div><div style="margin-top:6px;color:var(--dim);font-size:12.5px">Selection follows the scenario: an internal appliance leak would exclude the weather feed with the reason stated here; this freeze loss keeps it. Every candidate is considered, then used or excluded - never a blanket checklist.</div></td></tr>
-    <tr><td>Signature</td><td class="mono" id="sigcell">record REAL-P-7f3a91c2 - sha-256 chained - audit ledger entry 14/14</td></tr>
+    <tr><td>What the example shows</td><td>Made-up example: water flow started in the crawl space and ran 3h 12m before the leak sensor went off. Water reached the kitchen and bath subfloor.</td></tr>
+    <tr><td>Timeline</td><td>In the made-up example, the flow and moisture readings cross their warning levels while the weather input shows -9C. The demo does not decide the cause or rule anything out.</td></tr>
+    <tr><td>Comparison with made-up cases</td><td>Made-up example: 91% similar to cases in our made-up library. This is not a finding on cause or coverage.</td></tr>
+    <tr><td>Coverage</td><td>This demo does not look at coverage. Policy wording, exclusions, maintenance history and human review are outside it.</td></tr>
+    <tr><td>Damage and cost</td><td>Two areas affected, subfloor 62% wet. Example contractor estimate $18,400, within 4% of the made-up comparison range.</td></tr>
+    <tr><td>Cycle time</td><td>Example run time: <b>6 minutes 40 seconds.</b> Demo figure, not a real-world benchmark.</td></tr>
+    <tr><td>Evidence</td><td><span class="pill">sensor CSV fingerprinted</span><span class="pill">photos fingerprinted</span><span class="pill">weather feed fingerprinted</span><span class="pill">estimate fingerprinted</span></td></tr>
+    <tr><td>Outside information - chosen for this example</td><td><div class="mono" style="font-size:12px;line-height:1.8"><div><b style="color:var(--ok)">USED</b> weather - overnight low of -9C; added for freeze, storm, flood and wind examples</div><div><b style="color:var(--ok)">USED</b> time and season - 2:14 AM in February</div><div><b style="color:var(--ok)">USED</b> occupancy - home recorded as occupied and heated</div><div><b style="color:var(--ok)">USED</b> utility log - no power or heating gap recorded</div><div><b style="color:var(--ok)">USED</b> sensor health - all sensors passed their self-check at 02:00</div><div><b style="color:var(--ok)">USED</b> emergency response - cleanup crew on site after 3h 40m</div><div><b style="color:var(--warn)">EXCLUDED</b> nearby construction - no permits within 200 m</div><div><b style="color:var(--warn)">EXCLUDED</b> building codes - not needed for this example</div></div><div style="margin-top:6px;color:var(--dim);font-size:12.5px">What gets used depends on the example. For an appliance leak, weather would be left out and the reason shown here. This example keeps it. Each item is either used or left out, with a reason.</div></td></tr>
+    <tr><td>Seal</td><td class="mono" id="sigcell">record DEMO-P-7f3a91c2 - fingerprint chained - audit log entry 14/14</td></tr>
   </table>
-  <div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="run" id="exportRec" style="padding:10px 22px;font-size:13.5px">Export signed record</button><span class="mono" id="exNote" style="color:var(--dim);font-size:12px"></span></div>
+  <div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="run" id="exportRec" style="padding:10px 22px;font-size:13.5px">Export sealed record</button><span class="mono" id="exNote" style="color:var(--dim);font-size:12px"></span></div>
   <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
-    <div class="mono" style="font-size:12px;color:var(--dim);margin-bottom:8px">WHAT THIS RECORD CHANGES - the baselines below are editable assumptions, not claims; set them to your own book</div>
+    <div class="mono" style="font-size:12px;color:var(--dim);margin-bottom:8px">WHAT THIS COULD CHANGE - these starting numbers are assumptions you can edit, not promises. Set them to match your own claims.</div>
     <table class="rec">
-      <tr><td>Human review time</td><td>Baseline <input id="ecH2" type="number" value="16" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> adjuster hours to assemble this file by hand (footage pull, statements, reports). With the record: about 10 minutes of review. <b id="ecHD2"></b></td></tr>
-      <tr><td>Cycle time</td><td>Baseline <input id="ecD2" type="number" value="28" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> days from incident to claim-ready file. With the record: same day, built at ingest. <b id="ecDD2"></b></td></tr>
-      <tr><td>Estimate / reserve variance</td><td>Open-file reserve assumption <input id="ecO2" type="number" value="60000" style="width:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> vs the graded estimate in this record <input id="ecG2" type="number" value="18400" style="width:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)">. <b id="ecOD2"></b></td></tr>
+      <tr><td>Human review time</td><td>Baseline <input id="ecH2" type="number" value="16" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> adjuster hours to assemble this file by hand (footage pull, statements, reports). With the record: the demo assumes about 10 minutes of review. <b id="ecHD2"></b></td></tr>
+      <tr><td>Cycle time</td><td>Baseline <input id="ecD2" type="number" value="28" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> days from incident to claim-ready file. With the record: the demo assumes the same day. <b id="ecDD2"></b></td></tr>
+      <tr><td>Estimate / reserve variance</td><td>Open-file reserve assumption <input id="ecO2" type="number" value="60000" style="width:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> vs the estimate in this record <input id="ecG2" type="number" value="18400" style="width:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)">. <b id="ecOD2"></b></td></tr>
     </table>
   </div>
 
 </div>
 
-<h2>07 - The record store</h2>
+<h2>07 - Saved records</h2>
 <div class="card">
-  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Every record you sign persists to a local store with a hash-chained audit ledger - demo runs and your own files alike. Reload the page and they are still here; verify the chain any time. Nothing leaves the browser.</p>
+  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Every record you seal is saved in your browser with a tamper-evident audit log, whether it came from the demo or your own file. Reload the page and they're still here. You can check the log any time. Nothing leaves your browser.</p>
   <div class="stats">
-    <div class="stat"><div class="n" id="rsRec">0</div><div class="l">signed records stored</div></div>
-    <div class="stat"><div class="n" id="rsAudit">0</div><div class="l">audit ledger entries</div></div>
+    <div class="stat"><div class="n" id="rsRec">0</div><div class="l">sealed records saved</div></div>
+    <div class="stat"><div class="n" id="rsAudit">0</div><div class="l">audit log entries</div></div>
   </div>
   <div id="rsList" style="font-family:var(--mono);font-size:12.5px;max-height:180px;overflow-y:auto"></div>
   <div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
-    <button class="run" id="rsVerify" style="padding:10px 22px;font-size:13.5px">Verify audit chain</button>
+    <button class="run" id="rsVerify" style="padding:10px 22px;font-size:13.5px">Check audit log</button>
     <span class="mono" id="rsNote" style="color:var(--dim);font-size:12px"></span>
   </div>
 </div>
 
-<h2>08 - Proof at scale: the synthetic harness</h2>
+<h2>08 - Testing at scale with made-up data</h2>
 <div class="card">
-  <p style="color:var(--dim);font-size:14px;margin-bottom:10px">Real loss footage is rare and legally radioactive. The generator writes millions of labeled losses - water, fire, storm, freeze - and the grader pre-trains on those. It ships already knowing what a covered cause looks like.</p>
+  <p style="color:var(--dim);font-size:14px;margin-bottom:10px">Real loss footage is rare and hard to use legally. So we make up labeled losses (water, fire, storm, freeze) and the system practices on those first.</p>
   <div class="ctl" id="scales">
     <button class="scbtn on" data-s="0">100 losses</button>
     <button class="scbtn" data-s="1">1,000 losses</button>
@@ -164,28 +165,28 @@
     <button class="scbtn" data-s="4">100,000 losses</button>
   </div>
   <div class="stats">
-    <div class="stat"><div class="n" id="hCohort">100</div><div class="l">synthetic properties</div></div>
-    <div class="stat"><div class="n" id="hCorpus">52K</div><div class="l">labeled losses in corpus</div></div>
-    <div class="stat"><div class="n" id="hAcc">86.1%</div><div class="l">grader accuracy vs ground truth</div></div>
-    <div class="stat"><div class="n" id="hRuns">0</div><div class="l">losses graded this session</div></div>
+    <div class="stat"><div class="n" id="hCohort">100</div><div class="l">made-up properties</div></div>
+    <div class="stat"><div class="n" id="hCorpus">52K</div><div class="l">made-up losses in the library</div></div>
+    <div class="stat"><div class="n" id="hAcc">86.1%</div><div class="l">correct on the made-up test set</div></div>
+    <div class="stat"><div class="n" id="hRuns">0</div><div class="l">losses scored this session</div></div>
   </div>
   <div class="chartwrap"><div class="chart" id="accChart"></div></div>
   <div id="hlog" style="margin-top:10px"></div>
   <div class="verd" id="hverd"></div>
-  <button class="run" id="hgo" style="margin-top:14px">Generate + grade a synthetic loss</button>
-  <button class="run" id="hgo10k" style="margin-top:14px;margin-left:10px">Run the 10,000-loss validation</button>
+  <button class="run" id="hgo" style="margin-top:14px">Generate and score a made-up loss</button>
+  <button class="run" id="hgo10k" style="margin-top:14px;margin-left:10px">Run the 10,000-loss test</button>
   <div id="h10k" style="margin-top:12px"></div>
 </div>
 
-<h2>09 - Why it works</h2>
+<h2>09 - How it works</h2>
 <div class="cols3">
-  <div class="card"><h3>No footage required.</h3><p>Buildings already narrate themselves - flow meters, alarms, HVAC, panel events. The claim file builds from data the property and the carrier already have; photos are supporting evidence, not the backbone.</p></div>
-  <div class="card"><h3>The brain learns on synthetic losses.</h3><p>Millions of simulated water, fire, storm and freeze events - every record labeled, every outcome graded. The generator writes the corpus; the grader is measured against it.</p></div>
-  <div class="card"><h3>Signed records, not stories.</h3><p>Every record is hashed, timestamped, and written to an audit ledger. The insurer gets a file it can defend, not a narrative it has to re-litigate.</p></div>
+  <div class="card"><h3>No video needed.</h3><p>Buildings already record what happens: water flow, alarms, heating, electrical panel events. The replay is built from data the property and the insurer already have. Photos help, but they're not required.</p></div>
+  <div class="card"><h3>It learns from made-up losses.</h3><p>Made-up water, fire, storm and freeze losses, each with a known answer. We write the cases, then score the system against them.</p></div>
+  <div class="card"><h3>Sealed records, not stories.</h3><p>Every record is fingerprinted, time-stamped and written to an audit log. You get a record you can check, not a story you have to piece together again.</p></div>
 </div>
 
-<h2>10 - Where this sits</h2>
-<div class="card"><p style="color:var(--dim);font-size:14px">This working beta applies the same evidence-record pattern to supplied property sensor data and documents: observed chronology, source hashes, missing-channel labels and a signed extraction record for human review. It does not grade causation, liability or coverage.</p></div>
+<h2>10 - What this is and isn't</h2>
+<div class="card"><p style="color:var(--dim);font-size:14px">Property Replay is in beta. It replays the data you give it and shows what's missing. A person makes the call. It does not decide cause, liability or coverage.</p></div>
 
 <footer>Copyright Placid Lake LLC 2026</footer>
 </div>
@@ -329,7 +330,7 @@ function buildSceneProp(evts){
   const cov='Coverage: bounded to '+zNames.length+' zone(s) with sensor readings ('+zNames.join(', ')+') - areas without sensors produce no stream and are not establishable from this file.';
   return {evs,zones,marks,maxMoist:mm,src:'dropped',dataQuality:dq,dataQualityBasis:db,coverage:cov,
     what:'Reconstructed from the dropped sensor trace: '+evts.length+' readings across '+zNames.length+' zones. '+(hasMoisture&&origin?('First observed moisture rise: '+origin+'. '):'')+(durMin!==null?('Observed flow interval before shutoff: '+durMin+' minutes. '):'')+(hasMoisture?('Peak observed moisture '+Math.round(mm)+'%. '):'Moisture channel unavailable; spread and origin are not established. ')+'Data quality: '+dq+' - '+db+'. '+cov,
-    origin:hasMoisture?('Observed chronology: first flow threshold crossing '+(failT?fmtT(failT):'not found')+', first moisture rise '+(origin?('in '+origin):'not found')+'. No cause determination is made.'):'Flow-only trace: moisture, indoor origin and spread are unavailable; no cause determination is made.'};
+    origin:hasMoisture?('Timeline: first flow threshold crossing '+(failT?fmtT(failT):'not found')+', first moisture rise '+(origin?('in '+origin):'not found')+'. No cause determination is made.'):'Flow-only trace: moisture, indoor origin and spread are unavailable; no cause determination is made.'};
 }
 
 function parseCsvRows(text){const out=[];let row=[],v='',q=false;for(let i=0;i<text.length;i++){const c=text[i];if(q){if(c==='"'&&text[i+1]==='"'){v+='"';i++;}else if(c==='"')q=false;else v+=c;}else if(c==='"')q=true;else if(c===','){row.push(v);v='';}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(v);if(row.some(x=>x.trim()))out.push(row);row=[];v='';}else v+=c;}row.push(v);if(row.some(x=>x.trim()))out.push(row);return out;}
@@ -356,7 +357,7 @@ async function handleFiles(files){
     document.querySelectorAll('#rectab tr').forEach(tr=>{
       const k=tr.cells[0].textContent;
       if(k==='What happened')tr.cells[1].textContent=SCN.what;
-      if(k==='Observed chronology')tr.cells[1].textContent=SCN.origin;
+      if(k==='Timeline')tr.cells[1].textContent=SCN.origin;
     });
     pt=0;playing=false;draw(0);
     const rb=document.getElementById('run');rb.disabled=false;rb.textContent='Run the reconstruction on this file';
@@ -367,7 +368,7 @@ async function handleFiles(files){
   const t=document.getElementById('uprect');
   t.innerHTML='<tr><td>Files hashed</td><td>'+files.length+' file(s), '+((csvRows||jsonlRows)?((csvRows?csvRows+' CSV readings':'')+(csvRows&&jsonlRows?' + ':'')+(jsonlRows?jsonlRows+' JSON readings':''))+' parsed':'no sensor readings found')+'</td></tr>'
     +'<tr><td>Preliminary read</td><td>'+(csvRows+jsonlRows>10?(droppedEvents.length>=10?'Sensor trace present - press Run above to reconstruct THIS file (scene, timeline and record rebuild from your data).':'Sensor trace present - reconstruction can run on this file.'):'More sensor data needed for a full reconstruction.')+'</td></tr>'
-    +'<tr><td>Signature</td><td class="mono">record built in-browser - nothing uploaded</td></tr>';
+    +'<tr><td>Seal</td><td class="mono">record built in-browser - nothing uploaded</td></tr>';
   document.getElementById('upExport').onclick=()=>{
     const rows=[...t.querySelectorAll('tr')].map(tr=>[tr.cells[0].textContent,tr.cells[1].textContent]);
     exportRecord(rows,document.getElementById('upExNote'));
@@ -450,7 +451,7 @@ document.getElementById('hgo10k').onclick=async()=>{
   document.getElementById('h10k').innerHTML=html;
   const v=document.getElementById('hverd');v.style.display='block';v.className='verd hit';
   v.textContent='VALIDATION COMPLETE: '+N.toLocaleString()+' losses - overall '+(100*hits/N).toFixed(1)+'% measured - per-category breakdown above.';
-  btn.disabled=false;btn.textContent='Run the 10,000-loss validation';
+  btn.disabled=false;btn.textContent='Run the 10,000-loss test';
 };
 </script>
 <script>
