@@ -61,6 +61,7 @@
   #scene{width:100%;background:#0b1220;border:1px solid var(--line);border-radius:10px;display:block}
   #scrub{flex:1;accent-color:var(--acc);min-width:200px}
   #hud{font-family:var(--mono);font-size:12.5px;color:var(--acc)}
+.dlab{display:inline-block;font-family:var(--mono,monospace);font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:4px;margin-left:8px;vertical-align:middle;white-space:nowrap}.dlab.syn{background:#3a2a0a;color:#ffb84d;border:1px solid #ffb84d}.dlab.pub{background:#0a2e1a;color:#4ade80;border:1px solid #4ade80}
 </style>
 </head>
 <body>
@@ -71,7 +72,7 @@
 <p class="sub"><strong>There's been damage at the property. The evidence is still coming in. Replay what's here before you decide anything.</strong></p>
 <p class="sub">Replayed from the building's own sensors: water flow, leak and smoke alarms, minute by minute. Every replay is sealed. Change one number and it shows. If a piece of data is missing, we say so. We don't guess.</p>
 
-<h2>01 - The input</h2>
+<h2>01 - The input <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="grid">
   <div class="card"><h3>Phone photos (optional)</h3><p>A walkthrough video or a few photos from the owner's phone, if anyone took them. No photos? The replay still works from the sensors, alarms and documents.</p><p class="mono" style="margin-top:8px">walkthrough_2026-09-02.mp4 - 41s - optional</p></div>
   <div class="card"><h3>Sensors and alarms</h3><p>Water flow, leak sensors, smoke and CO alarms, heating and electrical panel events, recorded by the building itself, minute by minute.</p><p class="mono" style="margin-top:8px">sensors_8821.csv - flow 0&gt;41 L/min - 02:14 AM</p></div>
@@ -91,7 +92,7 @@
   </div>
 </div>
 
-<h2>03 - Run the replay</h2>
+<h2>03 - Run the replay <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="card">
   <div id="stages">
     <div class="stage"><div class="dot"></div>Reading the photos, sensor data and documents</div>
@@ -105,17 +106,17 @@
   <button class="run pulse" id="run">Run reconstruction</button>
 </div>
 
-<h2>04 - The replay - drawn from data, not video</h2>
+<h2>04 - The replay - drawn from data, not video <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="card">
   <p style="color:var(--dim);font-size:14px;margin-bottom:12px">There's no video below. Every frame is drawn from the sensors and alarms: area readings, flow rates and times, nothing else. You can watch the damage spread, then step through it minute by minute. The owner's photos never have to leave their phone.</p>
   <canvas id="scene" width="880" height="360"></canvas>
   <div class="ctl"><button class="run" id="playBtn" style="padding:10px 24px;font-size:14px">Play</button><input type="range" id="scrub" min="0" max="1000" value="0"><span id="hud">T+0m - flow 0 L/min - all zones dry</span></div>
 </div>
 
-<h2>05 - The timeline</h2>
+<h2>05 - The timeline <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="card"><div id="timeline"></div></div>
 
-<h2>06 - The record</h2>
+<h2>06 - The record <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="card">
   <table class="rec" id="rectab">
     <tr><td>What the example shows</td><td>Synthetic example: water flow started in the crawl space and ran 3h 12m before the leak sensor went off. Water reached the kitchen and bath subfloor.</td></tr>
@@ -130,7 +131,7 @@
   </table>
   <div style="margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap"><button class="run" id="exportRec" style="padding:10px 22px;font-size:13.5px">Export sealed record</button><span class="mono" id="exNote" style="color:var(--dim);font-size:12px"></span></div>
   <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
-    <div class="mono" style="font-size:12px;color:var(--dim);margin-bottom:8px">WHAT THIS COULD CHANGE - these starting numbers are assumptions you can edit, not promises. Set them to match your own claims.</div>
+    <div class="mono" style="font-size:12px;color:var(--dim);margin-bottom:8px">WHAT THIS COULD CHANGE <span class="dlab syn">SYNTHETIC DATA</span> - these starting numbers are synthetic assumptions you can edit, not promises. Set them to match your own claims.</div>
     <table class="rec">
       <tr><td>Human review time</td><td>Baseline <input id="ecH2" type="number" value="16" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> adjuster hours to assemble this file by hand (footage pull, statements, reports). With the record: the demo assumes about 10 minutes of review. <b id="ecHD2"></b></td></tr>
       <tr><td>Cycle time</td><td>Baseline <input id="ecD2" type="number" value="28" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> days from incident to claim-ready file. With the record: the demo assumes the same day. <b id="ecDD2"></b></td></tr>
@@ -140,7 +141,7 @@
 
 </div>
 
-<h2>07 - Saved records</h2>
+<h2>07 - Saved records <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="card">
   <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Every record you seal is saved in your browser with a tamper-evident audit log, whether it came from the demo or your own file. Reload the page and they're still here. You can check the log any time. Nothing leaves your browser.</p>
   <div class="stats">
@@ -154,7 +155,7 @@
   </div>
 </div>
 
-<h2>08 - Testing at scale with synthetic data</h2>
+<h2>08 - Testing at scale with synthetic data <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="card">
   <p style="color:var(--dim);font-size:14px;margin-bottom:10px">Real loss footage is rare and hard to use legally. So we make up labeled losses (water, fire, storm, freeze) and the system practices on those first.</p>
   <div class="ctl" id="scales">
@@ -188,8 +189,8 @@
 <h2>10 - What this is and isn't</h2>
 <div class="card"><p style="color:var(--dim);font-size:14px">Property Replay is in beta. It replays the data you give it and shows what's missing. A person makes the call. It does not decide cause, liability or coverage.</p></div>
 
-<div class="card" id="real-data"><p style="font-size:14px;margin-bottom:8px"><strong>Real-world numbers (public data)</strong></p><p style="color:var(--dim);font-size:14px;margin-bottom:6px">Water damage and freezing accounted for 27.6% of homeowners insurance losses in 2022. Source: Insurance Information Institute (ISO data), <a href="https://www.iii.org/fact-statistic/facts-statistics-homeowners-and-renters-insurance" target="_blank" rel="noopener" style="color:var(--acc)">Facts + Statistics: Homeowners and renters insurance</a>.</p><p style="color:var(--dim);font-size:14px;margin-bottom:6px">From 2018 to 2022, water damage and freezing claims averaged $13,954 each, at 1.61 claims per 100 insured homes a year. Same source.</p></div>
-<div class="card" id="data-sources"><p style="color:var(--dim);font-size:14px"><strong>Data sources.</strong> The real-world numbers above come from the public sources linked next to each one. The example loss, sensor readings, weather, contractor estimate and test properties are synthetic data, written by us for this demo. We kept the example synthetic on purpose: a real case would mean real people's data. No other government, regulator or public data is used.</p></div>
+<div class="card" id="real-data"><p style="font-size:14px;margin-bottom:8px"><strong>Real-world numbers</strong> <span class="dlab pub">PUBLIC DATA</span></p><p style="color:var(--dim);font-size:14px;margin-bottom:6px"><span class="dlab pub">PUBLIC DATA</span> Water damage and freezing accounted for 27.6% of homeowners insurance losses in 2022. Source: Insurance Information Institute (ISO data), <a href="https://www.iii.org/fact-statistic/facts-statistics-homeowners-and-renters-insurance" target="_blank" rel="noopener" style="color:var(--acc)">Facts + Statistics: Homeowners and renters insurance</a>.</p><p style="color:var(--dim);font-size:14px;margin-bottom:6px"><span class="dlab pub">PUBLIC DATA</span> From 2018 to 2022, water damage and freezing claims averaged $13,954 each, at 1.61 claims per 100 insured homes a year. Same source.</p><p style="color:var(--dim);font-size:14px;margin-bottom:6px"><span class="dlab pub">PUBLIC DATA</span> The February 2021 winter storm and cold wave caused about $22.7 billion in damage (not adjusted for inflation) and 262 deaths. Source: NOAA National Centers for Environmental Information, <a href="https://www.ncei.noaa.gov/access/billions/events-US-1980-2021.csv" target="_blank" rel="noopener" style="color:var(--acc)">Billion-Dollar Weather and Climate Disasters, 1980-2021 data</a>.</p><p style="color:var(--dim);font-size:14px;margin-bottom:6px"><span class="dlab pub">PUBLIC DATA</span> Claims adjusters, appraisers, examiners and investigators held 365,300 jobs in the U.S. in 2024, with median pay of $36.92 an hour. Source: U.S. Bureau of Labor Statistics, <a href="https://www.bls.gov/ooh/business-and-financial/claims-adjusters-appraisers-examiners-and-investigators.htm" target="_blank" rel="noopener" style="color:var(--acc)">Occupational Outlook Handbook</a>.</p></div>
+<div class="card" id="data-sources"><p style="color:var(--dim);font-size:14px"><strong>Data sources.</strong> Every number on this page is labeled SYNTHETIC DATA or PUBLIC DATA where it appears. Public data comes from the sources linked next to each figure. The example loss, sensor readings, weather, contractor estimate and test properties are synthetic data, written by us for this demo. We kept the example synthetic on purpose: a real case would mean real people's data. No other government, regulator or public data is used.</p></div>
 <footer>Copyright Placid Lake LLC 2026</footer>
 </div>
 
