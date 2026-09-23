@@ -67,12 +67,12 @@
 <div class="wrap">
 <header><div class="logo">PROPERTY REPLAY</div><div class="tag">WORKING BETA - RUN THE FLOW</div></header>
 
-<h1>A pipe bursts at 2 AM.<br>The carrier is still requesting proof.<br><em>The claim file is already signed.</em></h1>
-<p class="sub">Phone photos if anyone took them - but none are needed. Sensor data, alarm logs and the property's own documents rebuild the loss into a 4D reconstruction and a signed, claim-ready outcome record: what happened, the cause, what it costs, with the evidence to back every line.</p>
+<h1>A property loss is reported.<br>The available sensor records are still being assembled.<br><em>Replay the supplied evidence before making a claim decision.</em></h1>
+<p class="sub">This working beta hashes supplied files, parses unit-bearing property sensor data, renders an observed timeline and exports a signed extraction record. Missing moisture, flow, photo or document channels remain unavailable; the page does not determine cause or coverage.</p>
 
 <h2>01 - The input</h2>
 <div class="grid">
-  <div class="card"><h3>Phone photos (optional)</h3><p>A walkthrough video or a few photos from the owner's phone, if anyone took them. No photos, no problem: the claim file still builds from sensors, alarms and documents alone.</p><p class="mono" style="margin-top:8px">walkthrough_2026-09-02.mp4 - 41s - optional</p></div>
+  <div class="card"><h3>Phone photos (optional)</h3><p>A walkthrough video or a few photos from the owner's phone, if anyone took them. Photos are optional. Without them, the output is limited to the supplied sensors, alarms and documents.</p><p class="mono" style="margin-top:8px">walkthrough_2026-09-02.mp4 - 41s - optional</p></div>
   <div class="card"><h3>Sensor and alarm trace</h3><p>Water-flow meter, leak sensors, smoke and CO alarms, HVAC and panel events - the building's own account of itself, minute by minute.</p><p class="mono" style="margin-top:8px">sensors_8821.csv - flow 0&gt;41 L/min - 02:14 AM</p></div>
   <div class="card"><h3>External conditions + documents</h3><p>Weather feed pulled for freeze, storm and flood scenarios and graded as an input, not assumed - excluded with a stated reason when the cause is internal, like an appliance leak; contractor estimate and invoices hashed into the file.</p><p class="mono" style="margin-top:8px">wx_02-14Z.json - freeze -9C - estimate_v2.pdf</p></div>
 </div>
@@ -95,12 +95,12 @@
   <div id="stages">
     <div class="stage"><div class="dot"></div>Ingesting photos, sensor trace and documents</div>
     <div class="stage"><div class="dot"></div>Extracting the affected zones - kitchen, bath, crawl space</div>
-    <div class="stage"><div class="dot"></div>Building the 4D timeline - what failed, when, how it spread</div>
-    <div class="stage"><div class="dot"></div>Isolating the origin and the causal chain</div>
-    <div class="stage"><div class="dot"></div>Grading the outcome against learned loss patterns</div>
+    <div class="stage"><div class="dot"></div>Building the observed timeline - readings by time and zone</div>
+    <div class="stage"><div class="dot"></div>Locating the first observed threshold crossings</div>
+    <div class="stage"><div class="dot"></div>Comparing observed features with the synthetic reference corpus</div>
     <div class="stage"><div class="dot"></div>Signing the record - hash, timestamp, audit ledger</div>
   </div>
-  <p class="starthere">START HERE - press Run. The signed claim file builds in about 10 seconds.</p>
+  <p class="starthere">START HERE - press Run. The fictional example builds a signed replay record in about 10 seconds.</p>
   <button class="run pulse" id="run">Run reconstruction</button>
 </div>
 
@@ -118,11 +118,11 @@
 <div class="card">
   <table class="rec" id="rectab">
     <tr><td>What happened</td><td>Supply line failed in the crawl space; unobserved flow ran 3h 12m before the leak sensor tripped; water reached kitchen and bath subfloor.</td></tr>
-    <tr><td>Origin and cause</td><td>Freeze-stressed coupling, -9C overnight low. Ruled out: roof intrusion (dry attic sensors), appliance overflow (dishwasher circuit idle).</td></tr>
-    <tr><td>Causality grade</td><td><b>Sudden and accidental discharge - 91% confidence.</b> Pattern-matched against 52,000 labeled water-loss records.</td></tr>
-    <tr><td>Coverage read</td><td>Consistent with sudden-discharge water coverage; no maintenance-neglect markers in the 90-day sensor history.</td></tr>
+    <tr><td>Observed chronology</td><td>Fictional scenario chronology: flow and moisture thresholds occur during a -9C weather input. The demo does not determine cause or rule out alternatives.</td></tr>
+    <tr><td>Synthetic pattern comparison</td><td>Fictional feature match: 91% against the generated reference corpus. This is not a cause or coverage conclusion.</td></tr>
+    <tr><td>Coverage boundary</td><td>Coverage is not evaluated. Policy language, exclusions, maintenance history and human review are outside this demo.</td></tr>
     <tr><td>Severity and cost</td><td>Two zones affected, subfloor saturation 62%. Contractor estimate $18,400 - within 4% of the graded envelope for this loss class.</td></tr>
-    <tr><td>Cycle time</td><td>Loss to claim-ready file: <b>6 minutes 40 seconds.</b> Industry average: 2-5 weeks.</td></tr>
+    <tr><td>Cycle time</td><td>Fictional example runtime: <b>6 minutes 40 seconds.</b> This is a modeled demo value, not a production benchmark.</td></tr>
     <tr><td>Evidence</td><td><span class="pill">sensor CSV hashed</span><span class="pill">photos hashed</span><span class="pill">weather feed hashed</span><span class="pill">estimate hashed</span></td></tr>
     <tr><td>External evidence - selected by scenario</td><td><div class="mono" style="font-size:12px;line-height:1.8"><div><b style="color:var(--ok)">USED</b> weather feed - freeze loss: overnight low -9C is the causal mechanism; pulled for freeze, storm, flood and wind scenarios</div><div><b style="color:var(--ok)">USED</b> time of day + season - 2:14 AM in February is the peak-risk window for this loss class</div><div><b style="color:var(--ok)">USED</b> occupancy - home occupied and heated; the vacancy exclusion is screened out</div><div><b style="color:var(--ok)">USED</b> utility log - power and heat continuous; outage-driven heat loss ruled out</div><div><b style="color:var(--ok)">USED</b> sensor health - all sensors self-checked at 02:00; the readings stand</div><div><b style="color:var(--ok)">USED</b> emergency response - mitigation crew on site in 3h 40m; severity bounded</div><div><b style="color:var(--warn)">EXCLUDED</b> nearby construction - no permits within 200 m; vibration is not a plausible cause</div><div><b style="color:var(--warn)">EXCLUDED</b> building codes - mechanical failure; no structural or compliance question in this loss</div></div><div style="margin-top:6px;color:var(--dim);font-size:12.5px">Selection follows the scenario: an internal appliance leak would exclude the weather feed with the reason stated here; this freeze loss keeps it. Every candidate is considered, then used or excluded - never a blanket checklist.</div></td></tr>
     <tr><td>Signature</td><td class="mono" id="sigcell">record REAL-P-7f3a91c2 - sha-256 chained - audit ledger entry 14/14</td></tr>
@@ -185,7 +185,7 @@
 </div>
 
 <h2>10 - Where this sits</h2>
-<div class="card"><p style="color:var(--dim);font-size:14px">The same reconstruction engine that grades vehicle crashes grades property losses: telemetry and documents in, causality and liability graded, a signed claim-ready record out. Auto proved the pattern; property is the expansion into broader P&amp;C. Next on this track: a persistent backend for batch ingest and carrier-system connectors.</p></div>
+<div class="card"><p style="color:var(--dim);font-size:14px">This working beta applies the same evidence-record pattern to supplied property sensor data and documents: observed chronology, source hashes, missing-channel labels and a signed extraction record for human review. It does not grade causation, liability or coverage.</p></div>
 
 <footer>Copyright Placid Lake LLC 2026</footer>
 </div>
@@ -261,7 +261,7 @@ draw(0);
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');}
 function download(name,text){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;a.click();}
 async function exportRecord(rows,note){
-  const rec={record_type:'claim-ready outcome record',format_version:'1.0',product:'property-replay',ts:new Date().toISOString(),fields:rows};
+  const rec={record_type:'signed replay extraction record',format_version:'1.0',product:'property-replay',ts:new Date().toISOString(),fields:rows};
   rec.sha256=await sha(JSON.stringify(rec.fields));
   if(window.__storeRecord)window.__storeRecord(rec,rec.sha256);
   download('property-replay-record-'+rec.sha256.slice(0,8)+'.json',JSON.stringify(rec,null,2));
@@ -356,7 +356,7 @@ async function handleFiles(files){
     document.querySelectorAll('#rectab tr').forEach(tr=>{
       const k=tr.cells[0].textContent;
       if(k==='What happened')tr.cells[1].textContent=SCN.what;
-      if(k==='Origin and cause')tr.cells[1].textContent=SCN.origin;
+      if(k==='Observed chronology')tr.cells[1].textContent=SCN.origin;
     });
     pt=0;playing=false;draw(0);
     const rb=document.getElementById('run');rb.disabled=false;rb.textContent='Run the reconstruction on this file';
