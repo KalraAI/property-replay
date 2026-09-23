@@ -187,7 +187,7 @@
 <h2>10 - Where this sits</h2>
 <div class="card"><p style="color:var(--dim);font-size:14px">The same reconstruction engine that grades vehicle crashes grades property losses: telemetry and documents in, causality and liability graded, a signed claim-ready record out. Auto proved the pattern; property is the expansion into broader P&amp;C. Next on this track: a persistent backend for batch ingest and carrier-system connectors.</p></div>
 
-<footer>Working beta - synthetic data only. The generator writes the corpus; the grader is measured against it. Nothing on this page uploads anything.</footer>
+<footer>Copyright Placid Lake LLC 2026</footer>
 </div>
 
 <script>
@@ -289,11 +289,11 @@ function buildSceneProp(evts){
   const tms=evts.map(e=>parseTS(e.ts)).filter(Boolean);
   const t0=Math.min(...tms), t1=Math.max(...tms), span=Math.max(1,t1-t0);
   const moistMax={}; let mm=1;
-  evts.forEach(e=>{const m=+e.moisture||0; if(!(moistMax[e.zone]>=m))moistMax[e.zone]=m; if(m>mm)mm=m;});
+  evts.forEach(e=>{const m=e.moisture===null?null:+e.moisture; if(m===null||!Number.isFinite(m))return; if(!(moistMax[e.zone]>=m))moistMax[e.zone]=m; if(m>mm)mm=m;});
   const zIdx={}; zNames.forEach((zn,i)=>zIdx[zn]=i);
   const step=Math.max(1000,span/400);
   const wetAt=t=>{const w=new Array(zNames.length).fill(0);
-    evts.forEach(e=>{const d=parseTS(e.ts); if(d&&d<=t){const m=(+e.moisture||0)/mm; const i=zIdx[e.zone]; if(m>w[i])w[i]=m;}}); return w;};
+    evts.forEach(e=>{const d=parseTS(e.ts); if(d&&d<=t){const m=e.moisture===null?null:+e.moisture;if(m===null||!Number.isFinite(m))return; const i=zIdx[e.zone]; if(m>w[i])w[i]=m;}}); return w;};
   const flowAt=t=>{let f=0; evts.forEach(e=>{const d=parseTS(e.ts); if(d&&d<=t&&e.flow!==null&&e.flow!==undefined)f=+e.flow;}); return f;};
   let failT=null; for(let t=t0;t<=t1;t+=step){ if(flowAt(t)>5){failT=t;break;} }
   let origin=null,ot=null;
@@ -316,6 +316,7 @@ function buildSceneProp(evts){
   if(shutT&&failT)rest.push([shutT,['IMPACT',fmtT(shutT)+' - flow stops; unobserved flow ran '+Math.round((shutT-failT)/60000)+' minutes','impact']]);
   rest.sort((a,b)=>a[0]-b[0]).forEach(r=>evs.push(r[1]));
   evs.push(['POST','trace ends '+fmtT(t1)+' - peak moisture '+Math.round(mm)+'% across '+(spread.length+1)+' affected zone(s) - reconstruction computed from the dropped file']);
+  const hasMoisture=evts.some(e=>e.moisture!==null&&Number.isFinite(+e.moisture));
   const durMin=(failT&&shutT)?Math.round((shutT-failT)/60000):null;
   // data quality + coverage: property/stores legitimately have availability gaps,
   // so grade what arrived and bound the reconstruction to observed zones, honestly.
@@ -327,23 +328,29 @@ function buildSceneProp(evts){
   else{dq='high';db='regular readings across the loss window';}
   const cov='Coverage: bounded to '+zNames.length+' zone(s) with sensor readings ('+zNames.join(', ')+') - areas without sensors produce no stream and are not establishable from this file.';
   return {evs,zones,marks,maxMoist:mm,src:'dropped',dataQuality:dq,dataQualityBasis:db,coverage:cov,
-    what:'Reconstructed from the dropped sensor trace: '+evts.length+' readings across '+zNames.length+' zones. '+(origin?('Origin: '+origin+'. '):'')+(durMin!==null?('Unobserved flow ran '+durMin+' minutes before shutoff. '):'')+'Peak moisture '+Math.round(mm)+'%. Data quality: '+dq+' - '+db+'. '+cov,
-    origin:'Computed from the dropped trace: first flow jump '+(failT?fmtT(failT):'not found')+', first moisture rise in '+(origin||'an unidentified zone')+'. Grading against the labeled loss corpus follows the same path as the demo.'};
+    what:'Reconstructed from the dropped sensor trace: '+evts.length+' readings across '+zNames.length+' zones. '+(hasMoisture&&origin?('First observed moisture rise: '+origin+'. '):'')+(durMin!==null?('Observed flow interval before shutoff: '+durMin+' minutes. '):'')+(hasMoisture?('Peak observed moisture '+Math.round(mm)+'%. '):'Moisture channel unavailable; spread and origin are not established. ')+'Data quality: '+dq+' - '+db+'. '+cov,
+    origin:hasMoisture?('Observed chronology: first flow threshold crossing '+(failT?fmtT(failT):'not found')+', first moisture rise '+(origin?('in '+origin):'not found')+'. No cause determination is made.'):'Flow-only trace: moisture, indoor origin and spread are unavailable; no cause determination is made.'};
 }
+
+function parseCsvRows(text){const out=[];let row=[],v='',q=false;for(let i=0;i<text.length;i++){const c=text[i];if(q){if(c==='"'&&text[i+1]==='"'){v+='"';i++;}else if(c==='"')q=false;else v+=c;}else if(c==='"')q=true;else if(c===','){row.push(v);v='';}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(v);if(row.some(x=>x.trim()))out.push(row);row=[];v='';}else v+=c;}row.push(v);if(row.some(x=>x.trim()))out.push(row);return out;}
 
 async function handleFiles(files){
   const log=document.getElementById('uplog');log.innerHTML='';
-  let csvRows=0,jsonlRows=0;droppedEvents=[];
+  let csvRows=0,jsonlRows=0;droppedEvents=[],parseErrors=[];
   for(const f of files){
     const buf=await f.arrayBuffer();const h=await sha(new TextDecoder('latin1').decode(buf).slice(0,200000));
     const row=document.createElement('div');row.className='evrow';
     row.innerHTML='<b>'+f.name+'</b> - '+f.size+' bytes - sha-256 '+h.slice(0,16)+'... - hashed locally, never uploaded';
     log.appendChild(row);
-    if(f.name.endsWith('.csv')){const txt=new TextDecoder().decode(buf);const L=txt.split('\n').filter(l=>l.trim());csvRows+=L.length-1;
-      L.slice(1).forEach(l=>{const c=l.split(',');if(c.length>=3&&c[1]&&!/zone/i.test(c[1]))droppedEvents.push({ts:c[0].trim(),zone:c[1].trim(),moisture:+c[2]||0,flow:c.length>3?+c[3]:null});});}
+    if(f.name.endsWith('.csv')){const rows=parseCsvRows(new TextDecoder().decode(buf));csvRows+=Math.max(0,rows.length-1);
+      const h=(rows[0]||[]).map(x=>x.trim().toLowerCase()),idx=(...ns)=>h.findIndex(x=>ns.includes(x));
+      const it=idx('time','timestamp','ts','result_time'),iz=idx('zone','area','location'),im=idx('moisture_pct'),ifl=idx('flow_l_min');
+      if(it<0||iz<0||(im<0&&ifl<0))parseErrors.push(f.name+': require time, zone/area, and moisture_pct or flow_l_min');
+      else rows.slice(1).forEach(c=>{const ts=(c[it]||'').trim(),zone=(c[iz]||'').trim(),moisture=im>=0&&c[im]!==''?Number(c[im]):null,flow=ifl>=0&&c[ifl]!==''?Number(c[ifl]):null;if(ts&&zone&&(moisture===null||Number.isFinite(moisture))&&(flow===null||Number.isFinite(flow)))droppedEvents.push({ts,zone,moisture,flow,source_type:'property_sensor_csv',units:{moisture:im>=0?'percent':null,flow:ifl>=0?'L/min':null}});});}
     if(/\.(jsonl|ndjson|json)$/i.test(f.name)){const txt=new TextDecoder().decode(buf);txt.split('\n').forEach(l=>{l=l.trim();if(!l||l[0]!=='{')return;try{const o=JSON.parse(l);if(o.ts!==undefined&&o.zone!==undefined){jsonlRows++;droppedEvents.push({ts:o.ts,zone:String(o.zone),moisture:+(o.moisture!==undefined?o.moisture:(o.moisture_pct||0)),flow:o.flow!==undefined?+o.flow:null});}}catch(e){}});}
   }
   if(!files.length)return;
+  if(parseErrors.length)log.innerHTML+='<div class="evrow"><b>Rejected:</b> '+parseErrors.join('; ')+'</div>';
   if(droppedEvents.length>=10){
     SCN=buildSceneProp(droppedEvents);
     document.querySelectorAll('#rectab tr').forEach(tr=>{
