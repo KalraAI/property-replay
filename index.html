@@ -69,9 +69,8 @@
 <header><div class="logo">PROPERTY REPLAY</div><div class="tag">BETA - TRY IT</div></header>
 
 <h1>The truth, replayed.<br><em>Facts, not guesswork.</em></h1>
-<p class="sub"><strong>We map what happened in 4D: space and time. Then we read the meaning of every action and decision in it. Who did what, when, and why it mattered.</strong></p>
 <p class="sub"><strong>There's been damage at the property. The evidence is still coming in. Replay what's here before you decide anything.</strong></p>
-<p class="sub">Vision first. We start with photos and video of the damage, then add the building's own sensors, alarms, weather and documents. No photos? It still builds the record from the sensors alone. Every replay is sealed. Change one number and it shows. If a piece of data is missing, we say so. We don't guess.</p>
+<p class="sub">We start with photos and video of the damage, then add the building's own sensors, alarms, weather and documents. No photos? It still builds the record from the sensors alone. Every replay is sealed. Change one number and it shows. If a piece of data is missing, we say so. We don't guess.</p>
 
 <h2>01 - The input <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="grid">
@@ -392,7 +391,7 @@ document.querySelectorAll('#scales .scbtn').forEach(btn=>btn.onclick=()=>{
   document.getElementById('hAcc').textContent=cohorts[i][1].toFixed(1)+'%';
   [...chart.children].forEach((b,j)=>b.classList.toggle('on',j===i));
 });
-const causes=[['sudden discharge - supply line','weather excluded - internal mechanical failure'],['freeze burst - exterior wall','weather used - freeze mechanism'],['appliance overflow','weather excluded - appliance circuit at fault'],['storm intrusion - roof','weather used - storm track and wind'],['sewer backup','weather used - rainfall vs capacity graded']];
+const causes=[['sudden discharge - supply line','weather excluded - internal mechanical failure'],['freeze burst - exterior wall','weather used - freeze mechanism'],['appliance overflow','weather excluded - appliance circuit event logged'],['storm intrusion - roof','weather used - storm track and wind'],['sewer backup','weather used - rainfall vs capacity graded']];
 document.getElementById('hgo').onclick=()=>{
   hRuns++;document.getElementById('hRuns').textContent=hRuns;
   const log=document.getElementById('hlog');const c=causes[Math.floor(R()*causes.length)];const cause=c[0];const evnote=c[1];
