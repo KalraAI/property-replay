@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Property Replay - Capability Demo</title>
+<title>Property Replay - Product demo</title>
 <style>
   :root{--bg:#0b0e13;--panel:#12161e;--line:#232a36;--txt:#e8edf4;--dim:#8b96a7;--acc:#4da3ff;--good:#3fd68f;--warn:#ffb454;--ok:#3fd68f;--mono:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -120,9 +120,9 @@
 <div class="card">
   <table class="rec" id="rectab">
     <tr><td>What the example shows</td><td>Synthetic example: water flow started in the crawl space and ran 3h 12m before the leak sensor went off. Water reached the kitchen and bath subfloor.</td></tr>
-    <tr><td>Timeline</td><td>In the synthetic example, the flow and moisture readings cross their warning levels while the weather input shows -9C. The demo does not decide the cause or rule anything out.</td></tr>
+    <tr><td>Timeline</td><td>In the synthetic example, the flow and moisture readings cross their warning levels while the weather input shows -9C. The product demo does not decide the cause or rule anything out.</td></tr>
     <tr><td>Comparison with synthetic cases</td><td>Synthetic example: 91% similar to cases in our synthetic library. This is not a finding on cause or coverage.</td></tr>
-    <tr><td>Coverage</td><td>This demo does not look at coverage. Policy wording, exclusions, maintenance history and human review are outside it.</td></tr>
+    <tr><td>Coverage</td><td>This product demo does not look at coverage. Policy wording, exclusions, maintenance history and human review are outside it.</td></tr>
     <tr><td>Damage and cost</td><td>Two areas affected, subfloor 62% wet. Example contractor estimate $18,400, within 4% of the synthetic comparison range.</td></tr>
     <tr><td>Cycle time</td><td>Example run time: <b>6 minutes 40 seconds.</b> Demo figure, not a real-world benchmark.</td></tr>
     <tr><td>Evidence</td><td><span class="pill">sensor CSV fingerprinted</span><span class="pill">photos fingerprinted</span><span class="pill">weather feed fingerprinted</span><span class="pill">estimate fingerprinted</span></td></tr>
@@ -133,8 +133,8 @@
   <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
     <div class="mono" style="font-size:12px;color:var(--dim);margin-bottom:8px">WHAT THIS COULD CHANGE <span class="dlab syn">SYNTHETIC DATA</span> - these starting numbers are synthetic assumptions you can edit, not promises. Set them to match your own claims.</div>
     <table class="rec">
-      <tr><td>Human review time</td><td>Baseline <input id="ecH2" type="number" value="16" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> adjuster hours to assemble this file by hand (footage pull, statements, reports). With the record: the demo assumes about 10 minutes of review. <b id="ecHD2"></b></td></tr>
-      <tr><td>Cycle time</td><td>Baseline <input id="ecD2" type="number" value="28" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> days from incident to claim-ready file. With the record: the demo assumes the same day. <b id="ecDD2"></b></td></tr>
+      <tr><td>Human review time</td><td>Baseline <input id="ecH2" type="number" value="16" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> adjuster hours to assemble this file by hand (footage pull, statements, reports). With the record: the product demo assumes about 10 minutes of review. <b id="ecHD2"></b></td></tr>
+      <tr><td>Cycle time</td><td>Baseline <input id="ecD2" type="number" value="28" style="width:70px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> days from incident to claim-ready file. With the record: the product demo assumes the same day. <b id="ecDD2"></b></td></tr>
       <tr><td>Estimate / reserve variance</td><td>Open-file reserve assumption <input id="ecO2" type="number" value="60000" style="width:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)"> vs the estimate in this record <input id="ecG2" type="number" value="18400" style="width:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:3px 6px;font-family:var(--mono)">. <b id="ecOD2"></b></td></tr>
     </table>
   </div>
@@ -143,7 +143,7 @@
 
 <h2>07 - Saved records <span class="dlab syn">SYNTHETIC DATA</span></h2>
 <div class="card">
-  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Every record you seal is saved in your browser with a tamper-evident audit log, whether it came from the demo or your own file. Reload the page and they're still here. You can check the log any time. Nothing leaves your browser.</p>
+  <p style="color:var(--dim);font-size:14px;margin-bottom:12px">Every record you seal is saved in your browser with a tamper-evident audit log, whether it came from the product demo or your own file. Reload the page and they're still here. You can check the log any time. Nothing leaves your browser.</p>
   <div class="stats">
     <div class="stat"><div class="n" id="rsRec">0</div><div class="l">sealed records saved</div></div>
     <div class="stat"><div class="n" id="rsAudit">0</div><div class="l">audit log entries</div></div>
@@ -190,7 +190,7 @@
 <div class="card"><p style="color:var(--dim);font-size:14px">Property Replay is in beta. It replays the data you give it and shows what's missing. A person makes the call. It does not decide cause, liability or coverage.</p></div>
 
 <div class="card" id="real-data"><p style="font-size:14px;margin-bottom:8px"><strong>Real-world numbers</strong> <span class="dlab pub">PUBLIC DATA</span></p><p style="color:var(--dim);font-size:14px;margin-bottom:6px"><span class="dlab pub">PUBLIC DATA</span> Water damage and freezing accounted for 27.6% of homeowners insurance losses in 2022. Source: Insurance Information Institute (ISO data), <a href="https://www.iii.org/fact-statistic/facts-statistics-homeowners-and-renters-insurance" target="_blank" rel="noopener" style="color:var(--acc)">Facts + Statistics: Homeowners and renters insurance</a>.</p><p style="color:var(--dim);font-size:14px;margin-bottom:6px"><span class="dlab pub">PUBLIC DATA</span> From 2018 to 2022, water damage and freezing claims averaged $13,954 each, at 1.61 claims per 100 insured homes a year. Same source.</p><p style="color:var(--dim);font-size:14px;margin-bottom:6px"><span class="dlab pub">PUBLIC DATA</span> The February 2021 winter storm and cold wave caused about $22.7 billion in damage (not adjusted for inflation) and 262 deaths. Source: NOAA National Centers for Environmental Information, <a href="https://www.ncei.noaa.gov/access/billions/events-US-1980-2021.csv" target="_blank" rel="noopener" style="color:var(--acc)">Billion-Dollar Weather and Climate Disasters, 1980-2021 data</a>.</p><p style="color:var(--dim);font-size:14px;margin-bottom:6px"><span class="dlab pub">PUBLIC DATA</span> Claims adjusters, appraisers, examiners and investigators held 365,300 jobs in the U.S. in 2024, with median pay of $36.92 an hour. Source: U.S. Bureau of Labor Statistics, <a href="https://www.bls.gov/ooh/business-and-financial/claims-adjusters-appraisers-examiners-and-investigators.htm" target="_blank" rel="noopener" style="color:var(--acc)">Occupational Outlook Handbook</a>.</p></div>
-<div class="card" id="data-sources"><p style="color:var(--dim);font-size:14px"><strong>Data sources.</strong> Every number on this page is labeled SYNTHETIC DATA or PUBLIC DATA where it appears. Public data comes from the sources linked next to each figure. The example loss, sensor readings, weather, contractor estimate and test properties are synthetic data, written by us for this demo. We kept the example synthetic on purpose: a real case would mean real people's data. No other government, regulator or public data is used.</p></div>
+<div class="card" id="data-sources"><p style="color:var(--dim);font-size:14px"><strong>Data sources.</strong> Every number on this page is labeled SYNTHETIC DATA or PUBLIC DATA where it appears. Public data comes from the sources linked next to each figure. The example loss, sensor readings, weather, contractor estimate and test properties are synthetic data, written by us for this product demo. We kept the example synthetic on purpose: a real case would mean real people's data. No other government, regulator or public data is used.</p></div>
 <footer>Copyright Placid Lake LLC 2026</footer>
 </div>
 
