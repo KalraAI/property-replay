@@ -1,0 +1,5 @@
+{
+  "redirects": [
+    { "source": "/(.*)", "destination": "https://www.duranta.com/private/property-replay/", "permanent": false }
+  ]
+}
